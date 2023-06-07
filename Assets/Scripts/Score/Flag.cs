@@ -17,7 +17,7 @@ public class Flag : MonoBehaviour
 {
     // コンポーネント
     [SerializeField]
-    private GameObject scoreManagerObj;
+    //private GameObject scoreManagerObj;
 
     public static Camp holder = Camp.NONE;  // フラグの所有者
     Color[] flagColor = { Color.blue, Color.red, Color.white }; //フラグの色（A:青,B:赤,どちらでもない:白）
@@ -29,9 +29,9 @@ public class Flag : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Unit"))
         {   
-            SetFlagHost(other.GetComponent<FlagOnPlayer>().myCamp);
+            SetFlagHost(other.GetComponentInChildren<FlagOnPlayer>().myCamp);
             gameObject.GetComponent<Renderer>().material.color = flagColor[(int)holder];    //色を変更
         }
     }

@@ -27,6 +27,8 @@ public class GetMouseEvent : MonoBehaviour
             }
         }
 
+        /*
+        
         // Unit‚ðƒNƒŠƒbƒN‚µ‚Ä‚¢‚È‚¢‚È‚ç
         if (clickUnit == null)
         {
@@ -36,6 +38,7 @@ public class GetMouseEvent : MonoBehaviour
         {
             uiManager.showStatusPanel(clickUnit.GetComponentInParent<FlagOnPlayer>());
         }
+        */
 
     }
 }
