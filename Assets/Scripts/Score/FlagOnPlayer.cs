@@ -8,8 +8,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
+using Fusion;
 
-public class FlagOnPlayer : MonoBehaviour
+public class FlagOnPlayer : NetworkBehaviour
 {
     public Camp myCamp = Camp.A;        // èäëÆêwâc
 
@@ -25,4 +27,17 @@ public class FlagOnPlayer : MonoBehaviour
     public int dynamic_hitrate { get; set; } = 90;
 
     public int range_search { get; set; } = 2000;
+    
+    private async void OnEnable()
+    {
+        await Task.Delay(1000);
+        if (Object.InputAuthority.ToString() == "[Player:0]")
+        {
+            myCamp = Camp.A;
+        }
+        else if (Object.InputAuthority.ToString() == "[Player:1]")
+        {
+            myCamp = Camp.B;
+        }
+    }
 }

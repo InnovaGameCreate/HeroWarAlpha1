@@ -1,16 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 using System.Linq;
+using System.Threading.Tasks;
 using UniRx.Triggers;
 using Fusion;
 using UnityEngine.SceneManagement;
 
 public class ScoreObject : NetworkBehaviour
 {
-
-
     public const float addPoint = 20f;          //  (フレーム当たり)加算する点数
     public const float winPoint = 500f;   // 勝ちとなるスコア
     [Networked(OnChanged = nameof(OnScoreChanged))]
@@ -32,6 +32,20 @@ public class ScoreObject : NetworkBehaviour
             .Subscribe(_ => ScoreManager.Instance.FinishGame(camp))
             .AddTo(this);
     }
+
+    private async void OnEnable()
+    {
+        await Task.Delay(1000);
+        if (Object.InputAuthority.ToString() == "[Player:0]")
+        {
+            camp = Camp.A;
+        }
+        else if (Object.InputAuthority.ToString() == "[Player:1]")
+        {
+            camp = Camp.B;
+        }
+    }
+
     public override void Spawned()
     {
         if (ScoreManager.Instance != null)
@@ -57,7 +71,7 @@ public class ScoreObject : NetworkBehaviour
     {
         if (Flag.holder != Camp.NONE)
         {
-            scoreArray.Value += addPoint * Time.deltaTime;
+            scoreArray.Value += addPoint * Time.deltaTime*10.0f;
             camp = Flag.holder;
             _score = scoreArray.Value;
         }

@@ -29,7 +29,8 @@ namespace Unit
         private float searchRange;
         private UnitType unitType;
 
-        public PlayerRef local;
+        [Networked]
+        public PlayerRef local { get;set; }
 
 
         public IObservable<float> OncharacterHPChanged//characterHP���ύX���ꂽ�ۂɔ��s�����C�x���g

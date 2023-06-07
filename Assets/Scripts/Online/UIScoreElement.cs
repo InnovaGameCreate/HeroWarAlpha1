@@ -16,14 +16,15 @@ public class UIScoreElement : MonoBehaviour
     private Timer timer;
     // Start is called before the first frame update
 
-    private void Awake()
+    /*
+    private void OnEnable()
     {
         timer = GameObject.Find("Timer").GetComponent<Timer>();
     }
+    */
     public void UpdateScoreSlider(float score, Camp camp)
     {
         float fill = score / ScoreObject.winPoint;   //色のついた部分を示す変数　(現在のスコア)/(最大スコア)
-        
         scoreSlideres[(int)camp].value = (camp == Camp.A) ? 1 - fill : fill;  // スライダーのvalueの変更
         scoreTexts[(int)camp].text = score.ToString("000");
     }

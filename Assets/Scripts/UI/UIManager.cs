@@ -10,14 +10,6 @@ public class UIManager : MonoBehaviour
     Dictionary<ScoreObject, List<UIScoreElement>> _scoreUi = new Dictionary<ScoreObject, List<UIScoreElement>>();
     [SerializeField] UIScoreElement _prefab;
 
-    // コンポーネント
-    [SerializeField]
-    private Text[] statusPanelTexts;
-
-    // オブジェクト
-    [SerializeField]
-    private GameObject statusPanel;
-
     /*private void Start()
     {
         scoreManager.scoreArray[(int)Camp.A].Subscribe(e => UpdateScoreSlider(e, Camp.A));  //右側(A)のスコアを監視しUIを更新する
@@ -25,12 +17,10 @@ public class UIManager : MonoBehaviour
 
         timer.second.Subscribe(e => UpdateTimerText());  //右側(B)のスコアを監視しUIを更新する
     }*/
-    /*
     private void Awake()
     {
         element = Instantiate(_prefab, transform);  //スコアバーの生成
     }
-    */
 
     public void OnScoreChanged(ScoreObject scoreObject, float score, Camp camp)    //スコアが変わったら
     {
@@ -72,35 +62,10 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // 受け取ったPlayerのステータスを表示する
-    public void showStatusPanel(FlagOnPlayer player)
-    {
-        if (player == null)
-        {
-            statusPanel.SetActive(false);
-        }
-        else
-        {
-            statusPanel.SetActive(true);
-            statusPanelTexts[0].text = player.hp.ToString("000");
-            statusPanelTexts[1].text = player.max_hp.ToString("000");
-            statusPanelTexts[2].text = player.speed_heal.ToString("000");
-            statusPanelTexts[3].text = player.speed_move.ToString("000");
-            statusPanelTexts[4].text = player.speed_attack.ToString("000");
-            statusPanelTexts[5].text = player.range_hit.ToString("000");
-            statusPanelTexts[6].text = player.attack.ToString("000");
-            statusPanelTexts[7].text = player.defense.ToString("000");
-            statusPanelTexts[8].text = player.dynamic_hitrate.ToString("000");
-            statusPanelTexts[9].text = player.static_hitrate.ToString("000");
-            statusPanelTexts[10].text = player.range_search.ToString("000");
-        }
-
-    }
-
     /*
     private void Update()
     {
-       element.UpdateTimerText();
+        element.UpdateTimerText();
     }
     */
 }

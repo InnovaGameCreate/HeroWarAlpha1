@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 6806004776847289447}
   m_Layer: 0
   m_Name: PlayerB_OnlineTest
-  m_TagString: Player
+  m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -176,6 +176,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 4794510742500512772}
   - {fileID: 4794510742500512792}
+  - {fileID: 4752379726026974803}
   - {fileID: 6806004776847289447}
   SimulationBehaviours: []
 --- !u!143 &4794510742500512795
@@ -257,6 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 854c4b91f89ddf948b51d58eaa7e90b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   myCamp: 1
 --- !u!114 &5023037321854290723
 MonoBehaviour:
