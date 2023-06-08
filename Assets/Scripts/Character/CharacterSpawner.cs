@@ -36,12 +36,6 @@ namespace Unit
         {
             base.Spawned();
             Init(isAutoSpawnCharacterData);
-            
-            /*
-            if (isAutoSpawn)
-            {
-                Init(isAutoSpawnCharacterData);
-            }*/
         }
 
         public void Init(CharacterData data)
@@ -50,16 +44,14 @@ namespace Unit
             ReSpawn();
         }
 
+        /// <summary>
+        /// キャラクターの生成
+        /// </summary>
         private async void ReSpawn()
         {
             await Task.Delay(3300);
             var Effect = Instantiate(SpawnEffect, transform.position, Quaternion.identity);
             await Task.Delay(1700);
-            //await Task.Delay(5000);
-            //var SpawnObject = Instantiate(SpawnPrefab, transform.position, Quaternion.identity);
-            //Profile = SpawnObject.GetComponent<CharacterProfile>();
-            //Profile.Init(InstantiateCharacterData);
-            //Debug.Log(RoomPlayer.Object.InputAuthority);
             if (GameLauncher.Runner.GameMode == GameMode.Host)
             {
                 var obj = Runner.Spawn(SpawnPrefab, transform.position, Quaternion.identity, RoomPlayer.Object.InputAuthority);
@@ -81,6 +73,9 @@ namespace Unit
                 ).AddTo(this);
             }
         }
+        /// <summary>
+        /// リスポーン用のタイマー
+        /// </summary>
         private async void ReSpawnTimer()
         {
             await Task.Delay(5000);

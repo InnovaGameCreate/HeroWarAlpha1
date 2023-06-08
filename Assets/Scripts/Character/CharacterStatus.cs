@@ -68,6 +68,9 @@ namespace Unit
                 .Subscribe(StateAction)
                 .AddTo(this);
         }
+        /// <summary>
+        /// 各状態の行動
+        /// </summary>
         private void StateAction(CharacterState State)//状態を変更する関数
         {
             if (Object.HasInputAuthority)
@@ -123,7 +126,6 @@ namespace Unit
                 case CharacterState.Dead:
                     //if (MyCharacterProfile.GetCharacterOwnerType() == OwnerType.Player) DeadkLogManager.AddText(gameObject.name + "が死亡しました", transform.position);
                     MyAnimator.SetTrigger("Die");
-                    Debug.Log("���S");
                     //Destroy(gameObject, 3f);
                     await Task.Delay(3000);
                     //Runner.Despawn(Object);
@@ -132,7 +134,9 @@ namespace Unit
                     break;
             }
         }
-
+        /// <summary>
+        /// キャラクターが発見された時の動作
+        /// </summary>
         public async void Idiscovered(bool value)
         {
             Debug.Log($"{gameObject.name}は発見されました(bool = {value})");
