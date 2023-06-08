@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UniRx;
+using Fusion;
 
 namespace Unit
 {
-    public class DrawMoveLine : MonoBehaviour
+    public class DrawMoveLine : NetworkBehaviour
     {
         LineRenderer MyLineRenderer;
         CharacterMove MyCharacterMove;
@@ -25,7 +26,7 @@ namespace Unit
             Path = new NavMeshPath();
 
 
-            if (MyProfile.GetCharacterOwnerType() == OwnerType.Player)
+            if (MyProfile.GetCharacterOwnerType() == OwnerType.Player && HasInputAuthority)
             {
                 MyCharacterMove
                     .OnMoveTargetPositionChanged
