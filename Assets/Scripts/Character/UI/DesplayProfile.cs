@@ -11,8 +11,10 @@ namespace Unit
 {
     public class DesplayProfile : NetworkBehaviour
     {
+        [Header("ステータスを表すTMP")]
         [SerializeField]
         private TextMeshProUGUI CharacterStateTMP;
+        [Header("ユニットに関する画像")]
         [SerializeField]
         private Image InSelectImage;
         [SerializeField]
@@ -21,6 +23,7 @@ namespace Unit
         private Image CharacterSearchAreaImage;
         [SerializeField]
         private Image UnitImage;
+        [Header("HPバー")]
         [SerializeField]
         private Image HpBar;
         private float MaxHP;
@@ -50,11 +53,18 @@ namespace Unit
 
             //現在体力の同期
             MaxHP = MyCharacterProfile.MyHp;
+
             MyCharacterProfile
                 .OncharacterHPChanged
                 .Subscribe(characterHP =>
                 {
-                    HpBar.fillAmount = characterHP / MaxHP;
+                    if(MaxHP < characterHP)
+                    {
+                        MaxHP = characterHP;
+                    }
+                    //HpBar.fillAmount = characterHP / MaxHP;
+                    var currentHP = characterHP / MaxHP;
+                    RPC_SetHp(currentHP);
                 }
             ).AddTo(this);
 
@@ -99,6 +109,9 @@ namespace Unit
             //Debug.Log(name + "：" + Object.InputAuthority.PlayerId);
         }
 
+        /// <summary>
+        /// ユニットイメージを設定
+        /// </summary>
         private void setUnitImage(UnitType iconType)
         {
             UnitIcon unitIconResources = Resources.Load<UnitIcon>("UnitIcon");
@@ -116,6 +129,13 @@ namespace Unit
         {
             CharacterStateTMP.transform.LookAt(Camera.transform);
             CharacterStateTMP.text = state.ToString();
+        }
+
+        //ネットワークを介して状態を表すテキストを更新
+        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+        public void RPC_SetHp(float hp)
+        {
+            HpBar.fillAmount = hp;
         }
     }
 }

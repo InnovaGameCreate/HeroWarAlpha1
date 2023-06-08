@@ -26004,7 +26004,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh85792
+  m_Name: pb_Mesh38176
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -33448,8 +33448,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  camera1: {x: 60, y: 20, z: 90}
-  camera2: {x: 60, y: 20, z: 120}
+  camera1: {x: 60, y: 120, z: 90}
+  camera2: {x: 60, y: 120, z: 120}
   playerPrefab: {fileID: 7459362743004597435, guid: ba3eab107f954ce4ca5c9b89566d987a, type: 3}
   spawnPlace: []
 --- !u!114 &8751512571107129197
@@ -33495,6 +33495,7 @@ MonoBehaviour:
   - {x: 60, y: 0, z: 90}
   - {x: 60, y: 0, z: 120}
   characterSpawnerPrefab: {fileID: 6227929311437473781, guid: eb4ed651a9ff6994d9d141c15ac359fc, type: 3}
+  unitCount: 5
 --- !u!114 &8751512571107129200
 MonoBehaviour:
   m_ObjectHideFlags: 0
