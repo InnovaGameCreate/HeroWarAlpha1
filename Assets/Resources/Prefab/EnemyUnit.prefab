@@ -2075,6 +2075,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9051c6ede042b1449773748ae0795e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   VisibleObjects:
   - {fileID: 6714561865675554831}
 --- !u!195 &8795698949838557191
@@ -2182,8 +2183,10 @@ MonoBehaviour:
   - {fileID: 8795698949838557186}
   - {fileID: 1744801743285816924}
   - {fileID: 8795698949838557184}
+  - {fileID: 6824391315215003104}
   - {fileID: 2822435187915350132}
   - {fileID: 8795698949197320146}
+  - {fileID: 8795698949884872788}
   - {fileID: 8795698949617805746}
   SimulationBehaviours: []
 --- !u!1 &1744801743295348193
@@ -3929,6 +3932,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a903158abf5434f99a349b62098e1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
 --- !u!120 &8795698949884872789
 LineRenderer:
   m_ObjectHideFlags: 0

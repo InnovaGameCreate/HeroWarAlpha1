@@ -80,7 +80,7 @@ namespace Unit
                 {
                     if (!isCharacterlive) break;
                     //if(MyCharacterProfile.GetCharacterOwnerType() == OwnerType.Player ) 
-                    MyDrawer.DrawLine(TargetObject.transform.position);                                 //線を引く
+                    if(HasInputAuthority) MyDrawer.DrawLine(TargetObject.transform.position);           //線を引く
                     if (CanAttackState())                                                              
                     {
                         MyCharacterProfile.ChangeCharacterState(CharacterState.Attack);                 //攻撃状態に移行

@@ -394,6 +394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a903158abf5434f99a349b62098e1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
 --- !u!120 &406067801650985265
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -2517,8 +2518,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9051c6ede042b1449773748ae0795e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   VisibleObjects:
-  - {fileID: 590767758866323816}
+  - {fileID: 7070238277223681502}
 --- !u!195 &406067801706209635
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2599,10 +2601,12 @@ MonoBehaviour:
   - {fileID: 406067801706209638}
   - {fileID: 7459362742995255096}
   - {fileID: 406067801706209636}
+  - {fileID: 1353517780374649495}
   - {fileID: 7987120600909564822}
   - {fileID: 221138280057288734}
   - {fileID: 703712434880474757}
   - {fileID: 111017713333234335}
+  - {fileID: 406067801650985264}
   SimulationBehaviours: []
 --- !u!114 &7987120600909564822
 MonoBehaviour:

@@ -3,34 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 using System;
+using Fusion;
 
 namespace Unit
 {
-    public class CharacterVisible : MonoBehaviour
+    public class CharacterVisible : NetworkBehaviour
     {
         [SerializeField]
         private GameObject[] VisibleObjects;
         private CharacterStatus MyStatus;
         void Start()
         {
+            RPC_ChangeVisible(false);
+
             MyStatus = GetComponent<CharacterStatus>();
             MyStatus
                 .OniVisibleChanged
                 .Subscribe(value =>
                 {
-                    ChangeVisible(value);
+                    RPC_ChangeVisible(value);
                 }
             );
         }
-
-        //設定したオブジェクトの表示を全て切り替える
-        private void ChangeVisible(bool value)
-        {
-            //Debug.Log($"オブジェクトを表示{value}");
-            foreach (var Objects in VisibleObjects)
+        /// <summary>
+        /// 視覚化の切り替え
+        /// </summary>
+        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+        private void RPC_ChangeVisible(bool value)
+        {   
+            if(!HasInputAuthority)
             {
-                Objects.SetActive(value);
+                foreach (var Objects in VisibleObjects)
+                {
+                    Objects.SetActive(value);
+                }
             }
-        }
+        } 
     }
 }

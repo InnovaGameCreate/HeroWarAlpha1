@@ -109,7 +109,7 @@ namespace Unit
                     if (raycastHitList.Any())
                     {
                         var point = raycastHitList.First().point;
-                        var Ydistance = 100 - point.y;
+                        var Ydistance = mainCamera.transform.position.y - point.y;
                         MousePosition.z = Ydistance;
                     }
                     var objPosition = Camera.main.ScreenToWorldPoint(MousePosition);
