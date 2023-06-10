@@ -14,16 +14,25 @@ namespace Unit
         private CharacterStatus MyStatus;
         void Start()
         {
-            RPC_ChangeVisible(false);
-
             MyStatus = GetComponent<CharacterStatus>();
+            /*
             MyStatus
                 .OniVisibleChanged
                 .Subscribe(value =>
                 {
                     RPC_ChangeVisible(value);
                 }
-            );
+            )
+            .AddTo(this); ;
+            */
+        }
+        public void Visible(bool value)
+        {
+            Debug.Log($"Visible{value}:{VisibleObjects.Length}");
+                foreach (var Objects in VisibleObjects)
+                {
+                    Objects.SetActive(value);
+                }
         }
         /// <summary>
         /// éãäoâªÇÃêÿÇËë÷Ç¶

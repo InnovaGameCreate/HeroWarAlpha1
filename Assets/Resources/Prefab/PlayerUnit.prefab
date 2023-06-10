@@ -2397,6 +2397,7 @@ GameObject:
   - component: {fileID: 406067801706209636}
   - component: {fileID: 6374843138671507969}
   - component: {fileID: 1353517780374649495}
+  - component: {fileID: 6417359716949783618}
   - component: {fileID: 406067801706209635}
   - component: {fileID: 7459362742995255095}
   - component: {fileID: 7459362742995255094}
@@ -2521,6 +2522,24 @@ MonoBehaviour:
   _interpolationDataSource: 0
   VisibleObjects:
   - {fileID: 7070238277223681502}
+  - {fileID: 406067803144437432}
+--- !u!114 &6417359716949783618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7459362743004597435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f8363ac014c6a04b8fdc3018964a5c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  MyCharacterStatus: {fileID: 7459362742995255096}
+  MyCharacterProfile: {fileID: 406067801706209638}
+  MyCharacterVisible: {fileID: 1353517780374649495}
+  MyDesplayProfile: {fileID: 406067803144437430}
 --- !u!195 &406067801706209635
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2602,6 +2621,7 @@ MonoBehaviour:
   - {fileID: 7459362742995255096}
   - {fileID: 406067801706209636}
   - {fileID: 1353517780374649495}
+  - {fileID: 6417359716949783618}
   - {fileID: 7987120600909564822}
   - {fileID: 221138280057288734}
   - {fileID: 703712434880474757}

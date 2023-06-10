@@ -54,6 +54,7 @@ namespace Unit
             //現在体力の同期
             MaxHP = MyCharacterProfile.MyHp;
 
+            /*
             MyCharacterProfile
                 .OncharacterHPChanged
                 .Subscribe(characterHP =>
@@ -64,9 +65,9 @@ namespace Unit
                     }
                     //HpBar.fillAmount = characterHP / MaxHP;
                     var currentHP = characterHP / MaxHP;
-                    RPC_SetHp(currentHP);
+                    //RPC_SetHp(currentHP);
                 }
-            ).AddTo(this);
+            ).AddTo(this);*/
 
             //現在状態の同期
             MyCharacterProfile
@@ -124,18 +125,16 @@ namespace Unit
         }
 
         //ネットワークを介して状態を表すテキストを更新
-        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-        public void RPC_StateShow(CharacterState state)
+        public void StateShow(string state)
         {
             CharacterStateTMP.transform.LookAt(Camera.transform);
-            CharacterStateTMP.text = state.ToString();
+            CharacterStateTMP.text = state;
         }
 
         //ネットワークを介して状態を表すテキストを更新
-        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-        public void RPC_SetHp(float hp)
+        public void SetHp(float currentHP)
         {
-            HpBar.fillAmount = hp;
+            HpBar.fillAmount = currentHP;
         }
     }
 }
