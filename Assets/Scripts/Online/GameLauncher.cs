@@ -10,9 +10,7 @@ namespace Online
     {
         public static GameLauncher Instance { get; private set; }
         public static NetworkRunner Runner;
-        [SerializeField] private HostManager _hostManager;
         [SerializeField] private RoomPlayer _roomPlayer;
-        private GameMode _gameMode;
 
         //private LevelManager _levelManager;
         private NetworkSceneManagerDefault _networkSceneManagerDefault;
@@ -27,7 +25,6 @@ namespace Online
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            //_levelManager = GetComponent<LevelManager>();
             _networkSceneManagerDefault = GetComponent<NetworkSceneManagerDefault>();
         }
 
@@ -37,7 +34,6 @@ namespace Online
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
             if (!runner.IsServer) return;
-            if (_gameMode == GameMode.Host) runner.Spawn(_hostManager, Vector3.zero, Quaternion.identity);
             runner.Spawn(_roomPlayer, Vector3.zero, Quaternion.identity, player);
             if (RoomPlayer.Players.Count >= 2) _networkSceneManagerDefault.Runner.SetActiveScene(1);
         }
@@ -81,14 +77,13 @@ namespace Online
         private async void StartGame(GameMode mode)
         {
             if (Runner != null) return;
-            _gameMode = mode;
             
             Runner = gameObject.AddComponent<NetworkRunner>();
             Runner.ProvideInput = true;
 
             await Runner.StartGame(new StartGameArgs()
             {
-                GameMode = GameMode.AutoHostOrClient,
+                GameMode = mode,
                 SessionName = "",
                 SceneManager = _networkSceneManagerDefault,
                 PlayerCount = 2,

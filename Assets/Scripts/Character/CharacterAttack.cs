@@ -48,6 +48,7 @@ namespace Unit
                 .Where(x => x != null)
                 .Subscribe(x =>
                 {
+                    if (HasInputAuthority) Debug.Log("攻撃開始：" + Object.InputAuthority);
                     TargetObject = x;
                     StateAction();
                 }
@@ -63,8 +64,6 @@ namespace Unit
             attackRange = MyCharacterProfile.MyattackRange;
             AttaclColleder.radius = MyCharacterProfile.MysearchRange;
             reloadTime = MyCharacterProfile.MyReloadSpeed;
-            Object.AssignInputAuthority(MyCharacterProfile.local);
-            //Debug.Log(name + "：" + Object.InputAuthority.PlayerId);
         }
         
         IEnumerator Attack()
@@ -86,17 +85,17 @@ namespace Unit
                         MyCharacterProfile.ChangeCharacterState(CharacterState.Attack);                 //攻撃状態に移行
 
                         transform.parent.gameObject.transform.LookAt(TargetObject.transform.position);  //攻撃対象に向く
-                        DamageCs.AddDamage(damage);                                                     //敵キャラクターにダメージを与える
+                        if (HasInputAuthority) DamageCs.AddDamage(damage);                                                     //敵キャラクターにダメージを与える
                         yield return ShotEffect();                                                      //攻撃エフェクトを発生させる
                         if (TargetObject == null) break;                                                //攻撃対象がいないとブレイク
-                        if (!AttackRangeChack(TargetObject) || !CanAttackState()) break;  //対象がいない場合はブレイク
+                        if (!AttackRangeCheck(TargetObject) || !CanAttackState()) break;  //対象がいない場合はブレイク
 
                         MyCharacterProfile.ChangeCharacterState(CharacterState.Reload);                 //リロード状態に移行
 
                         yield return new WaitForSeconds(reloadTime);
                     }
                     if (TargetObject == null) break;                                                    //攻撃対象がいないとブレイク
-                    if (!isCharacterlive || !AttackRangeChack(TargetObject) || !CanAttackState()) break;//対象がいない場合はブレイク
+                    if (!isCharacterlive || !AttackRangeCheck(TargetObject) || !CanAttackState()) break;//対象がいない場合はブレイク
 
                 }
                 loseSight = true;
@@ -121,7 +120,7 @@ namespace Unit
             for (int i = 0; i < 3; i++)
             {
                 //Instantiate(BulletPrefab, FirePosition.transform.position, FirePosition.transform.rotation);
-                //if (Object.HasInputAuthority) RPC_ShotBullet();
+                if (Object.HasInputAuthority) RPC_ShotBullet();
                 yield return new WaitForSeconds(0.2f);
             }
         }
@@ -136,7 +135,7 @@ namespace Unit
         /// <summary>
         /// 対象が射程範囲内かどうか
         /// </summary>
-        private bool AttackRangeChack(GameObject TargetGameobject)
+        private bool AttackRangeCheck(GameObject TargetGameobject)
         {
             if (attackRange > ObjectsDistance(TargetGameobject)) return true;
             else return false;

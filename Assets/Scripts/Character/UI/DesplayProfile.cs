@@ -39,8 +39,6 @@ namespace Unit
             MyCharacterProfile = GetComponentInParent<CharacterProfile>();
             MyCharacterMove = GetComponentInParent<CharacterMove>();
             InSelectImage.color = Color.clear;
-            Object.AssignInputAuthority(MyCharacterProfile.local);
-            Debug.Log(name + "：" + MyCharacterProfile.local);
 
             //表示される索敵範囲と攻撃範囲の適応
             Vector2 AttackAreaSize = new Vector2(MyCharacterProfile.MyattackRange * 20, MyCharacterProfile.MyattackRange * 20);
@@ -64,18 +62,18 @@ namespace Unit
                     }
                     //HpBar.fillAmount = characterHP / MaxHP;
                     var currentHP = characterHP / MaxHP;
-                    RPC_SetHp(currentHP);
+                    if (HasInputAuthority) RPC_SetHp(currentHP);
                 }
             ).AddTo(this);
 
             //現在状態の同期
             MyCharacterProfile
                 .OnCharacterStateChanged
-                .Subscribe(CharacterState =>
+                .Subscribe(characterState =>
                 {
-                    CharacterStateTMP.transform.LookAt(Camera.transform);
-                    CharacterStateTMP.text = CharacterState.ToString();
-                    //RPC_StateShow(CharacterState);
+                    //CharacterStateTMP.transform.LookAt(Camera.transform);
+                    //CharacterStateTMP.text = CharacterState.ToString();
+                    if (Object.HasInputAuthority) RPC_StateShow(characterState);
                 }
             ).AddTo(this);
 
@@ -98,15 +96,6 @@ namespace Unit
                     }
                 }
             ).AddTo(this);
-            SetInputAuthority();
-        }
-
-        private async void SetInputAuthority()
-        {
-            await Task.Delay(100);
-            
-            Object.AssignInputAuthority(MyCharacterProfile.local);
-            //Debug.Log(name + "：" + Object.InputAuthority.PlayerId);
         }
 
         /// <summary>
@@ -125,7 +114,7 @@ namespace Unit
 
         //ネットワークを介して状態を表すテキストを更新
         [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-        public void RPC_StateShow(CharacterState state)
+        private void RPC_StateShow(CharacterState state)
         {
             CharacterStateTMP.transform.LookAt(Camera.transform);
             CharacterStateTMP.text = state.ToString();
@@ -133,7 +122,7 @@ namespace Unit
 
         //ネットワークを介して状態を表すテキストを更新
         [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-        public void RPC_SetHp(float hp)
+        private void RPC_SetHp(float hp)
         {
             HpBar.fillAmount = hp;
         }

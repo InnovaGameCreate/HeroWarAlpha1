@@ -52,15 +52,6 @@ namespace Unit
             mainCamera = Camera.main;
             MyCharacterProfile = GetComponent<CharacterProfile>();
             Agent = GetComponent<NavMeshAgent>();
-            SetInputAuthority();
-        }
-
-        private async void SetInputAuthority()
-        {
-            await Task.Delay(100);
-            
-            Object.AssignInputAuthority(MyCharacterProfile.local);
-            //Debug.Log(name + "：" + Object.InputAuthority.PlayerId);
         }
 
         public void MoveTarget()
@@ -98,7 +89,7 @@ namespace Unit
             if (Object.HasInputAuthority)
             {
                 yield return new WaitUntil(() => IsSelect.Value && (Input.GetKey(KeyCode.Mouse1) || Input.GetKey(KeyCode.Mouse0)));
-                if(Input.GetKey(KeyCode.Q)) MyCharacterProfile.ChangeCharacterState(CharacterState.VigilanceMove);
+                if (Input.GetKey(KeyCode.Q)) MyCharacterProfile.ChangeCharacterState(CharacterState.VigilanceMove);
                 else  MyCharacterProfile.ChangeCharacterState(CharacterState.Move);
     
                 if (Input.GetKey(KeyCode.Mouse1))

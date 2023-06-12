@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using UniRx;
 using System;
 using Fusion;
+using Online;
 
 namespace Unit
 {
@@ -58,9 +59,6 @@ namespace Unit
         private async void SetInputAuthority()
         {
             await Task.Delay(100);
-            
-            Object.AssignInputAuthority(MyCharacterProfile.local);
-            Debug.Log(name + "：" + MyCharacterProfile.local);
 
             MyCharacterProfile
                 .OnCharacterStateChanged
@@ -68,10 +66,11 @@ namespace Unit
                 .Subscribe(StateAction)
                 .AddTo(this);
         }
+        
         /// <summary>
         /// 各状態の行動
         /// </summary>
-        private void StateAction(CharacterState State)//状態を変更する関数
+        private async void StateAction(CharacterState State)//状態を変更する関数
         {
             if (Object.HasInputAuthority)
             {
@@ -81,11 +80,7 @@ namespace Unit
             {
                 Debug.Log("RPC_Renderが動いていません。"+ Object.InputAuthority);
             }
-        }
-
-        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-        public async void RPC_Render(CharacterState State)
-        {
+            
             switch (State)
             {
                 case CharacterState.Idle:
@@ -126,13 +121,16 @@ namespace Unit
                 case CharacterState.Dead:
                     //if (MyCharacterProfile.GetCharacterOwnerType() == OwnerType.Player) DeadkLogManager.AddText(gameObject.name + "が死亡しました", transform.position);
                     MyAnimator.SetTrigger("Die");
-                    //Destroy(gameObject, 3f);
                     await Task.Delay(3000);
-                    //Runner.Despawn(Object);
-                    break;
-                default:
+                    Runner.Despawn(Object);
                     break;
             }
+        }
+
+        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+        private void RPC_Render(CharacterState State)
+        {
+            MyCharacterProfile.ChangeCharacterState(State);
         }
         /// <summary>
         /// キャラクターが発見された時の動作

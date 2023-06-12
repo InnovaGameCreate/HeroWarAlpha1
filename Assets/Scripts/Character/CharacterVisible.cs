@@ -14,14 +14,20 @@ namespace Unit
         private CharacterStatus MyStatus;
         void Start()
         {
-            RPC_ChangeVisible(false);
+            if (HasInputAuthority)
+            {
+                RPC_ChangeVisible(false);
+            }
 
             MyStatus = GetComponent<CharacterStatus>();
             MyStatus
                 .OniVisibleChanged
                 .Subscribe(value =>
                 {
-                    RPC_ChangeVisible(value);
+                    if (HasInputAuthority)
+                    {
+                        RPC_ChangeVisible(value);
+                    }
                 }
             );
         }
