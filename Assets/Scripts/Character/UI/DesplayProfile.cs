@@ -71,11 +71,11 @@ namespace Unit
             //現在状態の同期
             MyCharacterProfile
                 .OnCharacterStateChanged
-                .Subscribe(characterState =>
+                .Subscribe(CharacterState =>
                 {
-                    //CharacterStateTMP.transform.LookAt(Camera.transform);
-                    //CharacterStateTMP.text = CharacterState.ToString();
-                    if (Object.HasInputAuthority) RPC_StateShow(characterState);
+                    CharacterStateTMP.transform.LookAt(Camera.transform);
+                    CharacterStateTMP.text = CharacterState.ToString();
+                    //if (Object.HasInputAuthority) StateShow();
                 }
             ).AddTo(this);
 
@@ -115,18 +115,18 @@ namespace Unit
         }
 
         //ネットワークを介して状態を表すテキストを更新
-        //public void StateShow(string state)
-        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-        private void RPC_StateShow(CharacterState state)
+        public void StateShow(string state)
+        //[Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+        //private void RPC_StateShow(CharacterState state)
         {
             CharacterStateTMP.transform.LookAt(Camera.transform);
             CharacterStateTMP.text = state;
         }
 
         //ネットワークを介して状態を表すテキストを更新
-        //public void SetHp(float currentHP)
-        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-        private void RPC_SetHp(float hp)
+        public void SetHp(float currentHP)
+        //[Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+        //private void RPC_SetHp(float hp)
         {
             HpBar.fillAmount = currentHP;
         }
