@@ -11,13 +11,14 @@ namespace Unit
     public class CharacterProfile : NetworkBehaviour, IDamagable
     {
         NavMeshAgent agent;
-        private ReactiveProperty<float> characterHP = new ReactiveProperty<float>(10f);//�L�����N�^�[�̗̑�
+        private ReactiveProperty<float> characterHP = new ReactiveProperty<float>(10f);//キャラクターの体力
         [SerializeField]
         private OwnerType CharacterOwnerType;
         //[Networked] 
-        private ReactiveProperty<CharacterState> CharacterState { get; set; } = new ReactiveProperty<CharacterState>();//�L�����N�^�[�̏��
-        private ReactiveProperty<GameObject> TargetObject = new ReactiveProperty<GameObject>(null);//�L�����N�^�[�̏��
-        
+        private ReactiveProperty<CharacterState> CharacterState { get; set; } = new ReactiveProperty<CharacterState>();//キャラクターの現在の状態
+        private ReactiveProperty<GameObject> TargetObject = new ReactiveProperty<GameObject>(null);//攻撃対象をオブジェクト
+        private ReactiveProperty<bool> initialSetting = new ReactiveProperty<bool>(false);//初期値の設定が行われているかどうか
+
         private float attackPower;
         private int recoverySpeed;
         private float moveSpeed;
@@ -32,16 +33,20 @@ namespace Unit
         [Networked]
         public PlayerRef local { get;set; }
 
+        public IObservable<bool> OninitialSetting//数値の初期設定を行ったかどうかを通知する
+        {
+            get { return initialSetting; }
+        }
 
-        public IObservable<float> OncharacterHPChanged//characterHP���ύX���ꂽ�ۂɔ��s�����C�x���g
+        public IObservable<float> OncharacterHPChanged//characterHPの変化があったときに発行される
         {
             get { return characterHP; }
         }
-        public IObservable<CharacterState> OnCharacterStateChanged//CharacterState���ύX���ꂽ�ۂɔ��s�����C�x���g
+        public IObservable<CharacterState> OnCharacterStateChanged//CharacterStateの変化があったときに発行される
         {
             get { return CharacterState; }
         }
-        public IObservable<GameObject> OnCharacterTargetObject//CharacterState���ύX���ꂽ�ۂɔ��s�����C�x���g
+        public IObservable<GameObject> OnCharacterTargetObject//TargetObjectの変化があったときに発行される
         {
             get { return TargetObject; }
         }
@@ -58,6 +63,11 @@ namespace Unit
         public float MyHp { get => characterHP.Value; }
         public UnitType MyUnitType { get => unitType; }
 
+
+        private void Awake()
+        {
+            initialSetting.Value = false;
+        }
         /// <summary>
         /// キャラクターの所有者を取得
         /// </summary>
@@ -107,7 +117,6 @@ namespace Unit
         /// <summary>
         /// キャラクターにダメージを与える
         /// </summary>
-        /// <param name="damage"></param>
         public void AddDamage(float damage)
 
         {
@@ -143,7 +152,8 @@ namespace Unit
 
             agent = GetComponent<NavMeshAgent>();
             agent.speed = Data.moveSpeed;
-            
+
+            initialSetting.Value = true;
             Debug.Log(attackPower);
         }
     }

@@ -20,6 +20,7 @@ namespace Unit
             }
 
             MyStatus = GetComponent<CharacterStatus>();
+            /*
             MyStatus
                 .OniVisibleChanged
                 .Subscribe(value =>
@@ -29,10 +30,20 @@ namespace Unit
                         RPC_ChangeVisible(value);
                     }
                 }
-            );
+            )
+            .AddTo(this); ;
+            */
+        }
+        public void Visible(bool value)
+        {
+            Debug.Log($"Visible{value}:{VisibleObjects.Length}");
+                foreach (var Objects in VisibleObjects)
+                {
+                    Objects.SetActive(value);
+                }
         }
         /// <summary>
-        /// ���o���̐؂�ւ�
+        /// Ž‹Šo‰»‚ÌØ‚è‘Ö‚¦
         /// </summary>
         [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
         private void RPC_ChangeVisible(bool value)

@@ -11,10 +11,10 @@ namespace Unit
 {
     public class DesplayProfile : NetworkBehaviour
     {
-        [Header("ƒXƒe[ƒ^ƒX‚ğ•\‚·TMP")]
+        [Header("ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’è¡¨ã™TMP")]
         [SerializeField]
         private TextMeshProUGUI CharacterStateTMP;
-        [Header("ƒ†ƒjƒbƒg‚ÉŠÖ‚·‚é‰æ‘œ")]
+        [Header("ãƒ¦ãƒ‹ãƒƒãƒˆã«é–¢ã™ã‚‹ç”»åƒ")]
         [SerializeField]
         private Image InSelectImage;
         [SerializeField]
@@ -23,7 +23,7 @@ namespace Unit
         private Image CharacterSearchAreaImage;
         [SerializeField]
         private Image UnitImage;
-        [Header("HPƒo[")]
+        [Header("HPãƒãƒ¼")]
         [SerializeField]
         private Image HpBar;
         private float MaxHP;
@@ -40,18 +40,19 @@ namespace Unit
             MyCharacterMove = GetComponentInParent<CharacterMove>();
             InSelectImage.color = Color.clear;
 
-            //•\¦‚³‚ê‚éõ“G”ÍˆÍ‚ÆUŒ‚”ÍˆÍ‚Ì“K‰
+            //è¡¨ç¤ºã•ã‚Œã‚‹ç´¢æ•µç¯„å›²ã¨æ”»æ’ƒç¯„å›²ã®é©å¿œ
             Vector2 AttackAreaSize = new Vector2(MyCharacterProfile.MyattackRange * 20, MyCharacterProfile.MyattackRange * 20);
             Vector2 SearchAreaSize = new Vector2(MyCharacterProfile.MysearchRange * 20, MyCharacterProfile.MysearchRange * 20);
             CharacterAttackAreaImage.rectTransform.sizeDelta = AttackAreaSize;
             CharacterSearchAreaImage.rectTransform.sizeDelta = SearchAreaSize;
 
-            //ƒAƒCƒRƒ“‚Ì•ÏX
+            //ã‚¢ã‚¤ã‚³ãƒ³ã®å¤‰æ›´
             setUnitImage(MyCharacterProfile.MyUnitType);
 
-            //Œ»İ‘Ì—Í‚Ì“¯Šú
+            //ç¾åœ¨ä½“åŠ›ã®åŒæœŸ
             MaxHP = MyCharacterProfile.MyHp;
 
+            /*
             MyCharacterProfile
                 .OncharacterHPChanged
                 .Subscribe(characterHP =>
@@ -62,11 +63,12 @@ namespace Unit
                     }
                     //HpBar.fillAmount = characterHP / MaxHP;
                     var currentHP = characterHP / MaxHP;
+                    //RPC_SetHp(currentHP);
                     if (HasInputAuthority) RPC_SetHp(currentHP);
                 }
-            ).AddTo(this);
+            ).AddTo(this);*/
 
-            //Œ»İó‘Ô‚Ì“¯Šú
+            //ç¾åœ¨çŠ¶æ…‹ã®åŒæœŸ
             MyCharacterProfile
                 .OnCharacterStateChanged
                 .Subscribe(characterState =>
@@ -77,7 +79,7 @@ namespace Unit
                 }
             ).AddTo(this);
 
-            //‘I‘ğ‚³‚ê‚½Û‚ÉA‚»‚ê‚ª•ª‚©‚é‚æ‚¤‚É‚·‚éImage‚ğ•\¦
+            //é¸æŠã•ã‚ŒãŸéš›ã«ã€ãã‚ŒãŒåˆ†ã‹ã‚‹ã‚ˆã†ã«ã™ã‚‹Imageã‚’è¡¨ç¤º
             MyCharacterMove
                 .isSelect
                 .Subscribe(SelectValue =>
@@ -99,7 +101,7 @@ namespace Unit
         }
 
         /// <summary>
-        /// ƒ†ƒjƒbƒgƒCƒ[ƒW‚ğİ’è
+        /// ãƒ¦ãƒ‹ãƒƒãƒˆã‚¤ãƒ¡ãƒ¼ã‚¸ã‚’è¨­å®š
         /// </summary>
         private void setUnitImage(UnitType iconType)
         {
@@ -112,19 +114,21 @@ namespace Unit
             }
         }
 
-        //ƒlƒbƒgƒ[ƒN‚ğ‰î‚µ‚Äó‘Ô‚ğ•\‚·ƒeƒLƒXƒg‚ğXV
+        //ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‚’ä»‹ã—ã¦çŠ¶æ…‹ã‚’è¡¨ã™ãƒ†ã‚­ã‚¹ãƒˆã‚’æ›´æ–°
+        //public void StateShow(string state)
         [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
         private void RPC_StateShow(CharacterState state)
         {
             CharacterStateTMP.transform.LookAt(Camera.transform);
-            CharacterStateTMP.text = state.ToString();
+            CharacterStateTMP.text = state;
         }
 
-        //ƒlƒbƒgƒ[ƒN‚ğ‰î‚µ‚Äó‘Ô‚ğ•\‚·ƒeƒLƒXƒg‚ğXV
+        //ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‚’ä»‹ã—ã¦çŠ¶æ…‹ã‚’è¡¨ã™ãƒ†ã‚­ã‚¹ãƒˆã‚’æ›´æ–°
+        //public void SetHp(float currentHP)
         [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
         private void RPC_SetHp(float hp)
         {
-            HpBar.fillAmount = hp;
+            HpBar.fillAmount = currentHP;
         }
     }
 }
