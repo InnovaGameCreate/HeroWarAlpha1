@@ -7,13 +7,6 @@ using UnityEngine;
 
 public class RoomPlayer : NetworkBehaviour
 {
-    public enum EGameState
-    {
-        Lobby,
-        Preparing,
-        GameNow
-    }
-    
     public static readonly List<RoomPlayer> Players = new List<RoomPlayer>();
 
     public static RoomPlayer Local;
@@ -32,8 +25,6 @@ public class RoomPlayer : NetworkBehaviour
         }
         
         Players.Add(this);
-        Debug.Log(Object.InputAuthority);
-        
         DontDestroyOnLoad(gameObject);
     }
 

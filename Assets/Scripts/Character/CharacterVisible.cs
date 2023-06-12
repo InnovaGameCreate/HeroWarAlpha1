@@ -14,13 +14,21 @@ namespace Unit
         private CharacterStatus MyStatus;
         void Start()
         {
+            if (HasInputAuthority)
+            {
+                RPC_ChangeVisible(false);
+            }
+
             MyStatus = GetComponent<CharacterStatus>();
             /*
             MyStatus
                 .OniVisibleChanged
                 .Subscribe(value =>
                 {
-                    RPC_ChangeVisible(value);
+                    if (HasInputAuthority)
+                    {
+                        RPC_ChangeVisible(value);
+                    }
                 }
             )
             .AddTo(this); ;
@@ -35,7 +43,7 @@ namespace Unit
                 }
         }
         /// <summary>
-        /// ���o���̐؂�ւ�
+        /// Ž‹Šo‰»‚ÌØ‚è‘Ö‚¦
         /// </summary>
         [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
         private void RPC_ChangeVisible(bool value)

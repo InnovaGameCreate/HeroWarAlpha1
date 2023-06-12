@@ -1,7 +1,8 @@
+using Fusion;
 using Unit;
 using UnityEngine;
 
-public class KillMyCharacter : MonoBehaviour
+public class KillMyCharacter : NetworkBehaviour
 {
     private CharacterProfile _target;
     
@@ -14,7 +15,7 @@ public class KillMyCharacter : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.K))
         {
-            if (_target.GetCharacterState() != CharacterState.Dead)
+            if (Object.HasInputAuthority && _target.GetCharacterState() != CharacterState.Dead)
             {
                 _target.AddDamage(999f);
                 Debug.Log("999ダメージ！");
