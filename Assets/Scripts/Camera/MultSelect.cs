@@ -9,8 +9,7 @@ public class MultSelect : MonoBehaviour
 {
     private Vector3 SelectStartPos;
     private Vector3 SelectEndPos;
-    [SerializeField]
-    private GameObject MarkPoint;
+    [SerializeField] private GameObject MarkPoint;
     private Camera mainCamera;
 
     private void Start()
@@ -23,11 +22,11 @@ public class MultSelect : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitUntil(() => Input.GetKey(KeyCode.Mouse0));//範囲選択の開始地点の決定
+            yield return new WaitUntil(() => Input.GetKey(KeyCode.Mouse0)); //範囲選択の開始地点の決定
             SelectStartPos = ScreenPos();
             var MarkStartPoint = Instantiate(MarkPoint, SelectStartPos, Quaternion.identity);
 
-            yield return new WaitUntil(() => Input.GetKeyUp(KeyCode.Mouse0));//範囲選択の終了地点の決定
+            yield return new WaitUntil(() => Input.GetKeyUp(KeyCode.Mouse0)); //範囲選択の終了地点の決定
             SelectEndPos = ScreenPos();
             var MarkEndPoint = Instantiate(MarkPoint, SelectEndPos, Quaternion.identity);
 
@@ -53,6 +52,7 @@ public class MultSelect : MonoBehaviour
                         }
                     }
                 }
+
                 yield return new WaitUntil(() => Input.GetKey(KeyCode.Mouse0));
                 Destroy(MarkStartPoint);
                 Destroy(MarkEndPoint);
@@ -64,43 +64,31 @@ public class MultSelect : MonoBehaviour
         }
     }
 
-    private Vector3 ScreenPos()//画面での座標計算
+    private Vector3 ScreenPos() //レイをとばして、当たった場所を返す。
     {
-        var MousePosition = Input.mousePosition;
-        var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        var raycastHitList = Physics.RaycastAll(ray).ToList();
-        if (raycastHitList.Any())
-        {
-            var point = raycastHitList.First().point;
-            var Ydistance = transform.position.y - point.y;
-            MousePosition.z = Ydistance;
-        }
-
-        var objPosition = Camera.main.ScreenToWorldPoint(MousePosition);
-
-        float radium = objPosition.y / Mathf.Cos(30f * Mathf.Deg2Rad);
-        float ModZ = radium * Mathf.Sin(30f * Mathf.Deg2Rad);
-
-        var SelectPoint = new Vector3(objPosition.x, 0, objPosition.z + ModZ);
-
-        return SelectPoint;
+        Vector3 mousePosition = Input.mousePosition;
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        RaycastHit hit;
+        Physics.Raycast(ray, out hit);
+        return hit.point;
     }
 
     private bool InSelectArea(GameObject targetObject)
     {
         if ((targetObject.transform.position.x >= SelectStartPos.x
-        && targetObject.transform.position.x <= SelectEndPos.x)
-        || (targetObject.transform.position.x <= SelectStartPos.x
-        && targetObject.transform.position.x >= SelectEndPos.x))
+             && targetObject.transform.position.x <= SelectEndPos.x)
+            || (targetObject.transform.position.x <= SelectStartPos.x
+                && targetObject.transform.position.x >= SelectEndPos.x))
         {
             if ((targetObject.transform.position.z >= SelectStartPos.z
-            && targetObject.transform.position.z <= SelectEndPos.z)
-            || (targetObject.transform.position.z <= SelectStartPos.z
-            && targetObject.transform.position.z >= SelectEndPos.z))
+                 && targetObject.transform.position.z <= SelectEndPos.z)
+                || (targetObject.transform.position.z <= SelectStartPos.z
+                    && targetObject.transform.position.z >= SelectEndPos.z))
             {
                 return true;
             }
         }
+
         return false;
     }
 

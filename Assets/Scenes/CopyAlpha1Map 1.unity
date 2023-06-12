@@ -10552,6 +10552,7 @@ GameObject:
   - component: {fileID: 602297794}
   - component: {fileID: 602297793}
   - component: {fileID: 602297792}
+  - component: {fileID: 602297795}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -10668,6 +10669,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 400
   ZoomSpeed: 200
+--- !u!114 &602297795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602297788}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5b07681b0ccd241b4d74ea4ba18c27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MarkPoint: {fileID: 3142728555183092701, guid: 6f8ce0ade03e5dc4f9ecc73e8c98c7ad, type: 3}
 --- !u!43 &646486866
 Mesh:
   m_ObjectHideFlags: 0
@@ -26280,7 +26294,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh93788
+  m_Name: pb_Mesh42660
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

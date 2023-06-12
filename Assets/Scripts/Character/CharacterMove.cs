@@ -94,22 +94,11 @@ namespace Unit
     
                 if (Input.GetKey(KeyCode.Mouse1))
                 {
-                    var MousePosition = Input.mousePosition;
-                    var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-                    var raycastHitList = Physics.RaycastAll(ray).ToList();
-                    if (raycastHitList.Any())
-                    {
-                        var point = raycastHitList.First().point;
-                        var Ydistance = mainCamera.transform.position.y - point.y;
-                        MousePosition.z = Ydistance;
-                    }
-                    var objPosition = Camera.main.ScreenToWorldPoint(MousePosition);
-    
-                    float radium = objPosition.y / Mathf.Cos(30f * Mathf.Deg2Rad);
-                    float ModZ = radium * Mathf.Sin(30f * Mathf.Deg2Rad);
-    
-                    Vector3 MovePoint = new Vector3(objPosition.x, 0, objPosition.z + ModZ);
-                    RPC_MoveChara(MovePoint);
+                    Vector3 mousePosition = Input.mousePosition;
+                    Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+                    RaycastHit hit;
+                    Physics.Raycast(ray, out hit);
+                    RPC_MoveChara(hit.point);
     
                     //moveTargetPosition.Value = new Vector3(MovePoint.x, transform.position.y, MovePoint.z);
                     //MoveTarget();

@@ -20,7 +20,7 @@ namespace Unit
             }
 
             MyStatus = GetComponent<CharacterStatus>();
-            /*
+            
             MyStatus
                 .OniVisibleChanged
                 .Subscribe(value =>
@@ -32,7 +32,7 @@ namespace Unit
                 }
             )
             .AddTo(this); ;
-            */
+            
         }
         public void Visible(bool value)
         {
