@@ -12,8 +12,6 @@ namespace Unit
         private GameObject SpawnPrefab;
         CharacterProfile _profile;
         [SerializeField]
-        private bool isAutoSpawn = false;
-        [SerializeField]
         CharacterData isAutoSpawnCharacterData;
         [SerializeField]
         private GameObject SpawnEffect;
@@ -22,15 +20,6 @@ namespace Unit
         public RoomPlayer RoomPlayer { get; set; }
         
         private CharacterData InstantiateCharacterData;
-        /*
-        void Start()
-        {
-            if (RoomPlayer.Local != null)
-            {
-                _playerRef = RoomPlayer.Local.Object.InputAuthority;
-            }
-        }
-        */
 
         public override void Spawned()
         {
@@ -50,29 +39,51 @@ namespace Unit
         private async void ReSpawn()
         {
             await Task.Delay(3300);
-            var Effect = Instantiate(SpawnEffect, transform.position, Quaternion.identity);
+            var effect = Runner.Spawn(SpawnEffect, transform.position, Quaternion.identity);
             await Task.Delay(1700);
+            Runner.Despawn(effect);
             if (GameLauncher.Runner.GameMode == GameMode.Host)
             {
-                var obj = Runner.Spawn(SpawnPrefab, transform.position, Quaternion.identity, RoomPlayer.Object.InputAuthority);
+                var obj = Runner.Spawn(SpawnPrefab, transform.position, Quaternion.identity, RoomPlayer.Object.InputAuthority, InitCharacterBeforeSpawn);
+                /*
                 _profile = obj.GetComponent<CharacterProfile>();
                 _profile.Init(InstantiateCharacterData);
                 _profile.SetCharacterOwnerType(OwnerType.Player);
                 _profile.local = RoomPlayer.Object.InputAuthority;
-                Debug.Log(RoomPlayer.Object.InputAuthority);
 
                 _profile
                     .OnCharacterStateChanged
-                    .Where(CharacterState => CharacterState == CharacterState.Dead)
-                    .Subscribe(CharacterState =>
+                    .Where(characterState => characterState == CharacterState.Dead)
+                    .Subscribe(characterState =>
                     {
-                        Runner.Despawn(obj);
+                        //Runner.Despawn(obj);
                         Debug.Log("生成" + playerNum);
                         ReSpawnTimer();
                     }
                 ).AddTo(this);
+                 */
             }
         }
+
+        private void InitCharacterBeforeSpawn(NetworkRunner runner, NetworkObject obj)
+        {
+            _profile = obj.GetComponent<CharacterProfile>();
+            _profile.Init(InstantiateCharacterData);
+            _profile.SetCharacterOwnerType(OwnerType.Player);
+            _profile.local = RoomPlayer.Object.InputAuthority;
+
+            _profile
+                .OnCharacterStateChanged
+                .Where(characterState => characterState == CharacterState.Dead)
+                .Subscribe(characterState =>
+                    {
+                        //Runner.Despawn(obj);
+                        Debug.Log("生成" + playerNum);
+                        ReSpawnTimer();
+                    }
+                ).AddTo(this);
+        }
+        
         /// <summary>
         /// リスポーン用のタイマー
         /// </summary>

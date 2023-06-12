@@ -36,6 +36,7 @@ namespace Unit
                     UnitTargetObject = null;
                     if (CanShotEnemy())
                     {
+                        Debug.Log("敵発見！");
                         MyCharacterProfile.SetTarget(TargetObject);
                     }
                 }).AddTo(this);
