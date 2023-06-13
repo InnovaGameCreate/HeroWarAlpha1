@@ -38,7 +38,7 @@ public class UIManager : MonoBehaviour
     }
 
 
-    public void OnPlayerJoined(Fusion.PlayerRef player, ScoreObject scoreObject)
+    public void OnPlayerJoined(ScoreObject scoreObject)
     {
         if (_scoreUi.ContainsKey(scoreObject) == false)
         {

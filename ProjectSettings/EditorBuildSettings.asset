@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/MatchingTest.unity
     guid: 652af441d36576c4e896c419592b62a8
   - enabled: 1
-    path: Assets/Scenes/Alpha1Map.unity
-    guid: 3460a55fb4607b141a35e13f7768cc24
+    path: Assets/Scenes/OnishiScene.unity
+    guid: 9c4fd836f8a843a46a5073d3ba59b11e
   - enabled: 1
     path: Assets/Scenes/WINSCENE.unity
     guid: b243f888d477b6f42a93bcc9b67eec47
