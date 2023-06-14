@@ -39,7 +39,8 @@ namespace Unit
             MyCharacterProfile = GetComponentInParent<CharacterProfile>();
             MyCharacterMove = GetComponentInParent<CharacterMove>();
             InSelectImage.color = Color.clear;
-
+            Debug.Log(MyCharacterProfile.MyattackRange);
+            Debug.Log(MyCharacterProfile.MysearchRange);
             //表示される索敵範囲と攻撃範囲の適応
             Vector2 AttackAreaSize = new Vector2(MyCharacterProfile.MyattackRange * 20, MyCharacterProfile.MyattackRange * 20);
             Vector2 SearchAreaSize = new Vector2(MyCharacterProfile.MysearchRange * 20, MyCharacterProfile.MysearchRange * 20);

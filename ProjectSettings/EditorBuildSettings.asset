@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/MatchingTest.unity
     guid: 652af441d36576c4e896c419592b62a8
   - enabled: 1
-    path: Assets/Scenes/Alpha1Map.unity
-    guid: 3460a55fb4607b141a35e13f7768cc24
+    path: Assets/Scenes/CopyAlpha1Map 1.unity
+    guid: 9eb113cddc4c8eb41a45705aa1fbeee6
   - enabled: 1
     path: Assets/Scenes/WINSCENE.unity
     guid: b243f888d477b6f42a93bcc9b67eec47

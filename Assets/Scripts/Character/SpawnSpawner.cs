@@ -32,6 +32,7 @@ public class SpawnSpawner : NetworkBehaviour
                         point + new Vector3(i * 30.0f, 0, 0),
                         Quaternion.identity,
                         player.Object.InputAuthority
+                        
                     );
                     characterSpawner.RoomPlayer = player;
                 }
