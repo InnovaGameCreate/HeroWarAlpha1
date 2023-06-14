@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Fusion;
+using Online;
 using UnityEngine.SceneManagement;
 
 public class ScoreManager : NetworkBehaviour
@@ -80,13 +81,13 @@ public class ScoreManager : NetworkBehaviour
     {
         if (camp == Camp.A)
         {
-            RoomPlayer.Local.HasWined = FlagOnlineManager._runner.GameMode == GameMode.Host;
+            RoomPlayer.Local.hasWined = GameLauncher.Runner.GameMode == GameMode.Host;
         }
         else
         {
-            RoomPlayer.Local.HasWined = FlagOnlineManager._runner.GameMode != GameMode.Host;
+            RoomPlayer.Local.hasWined = GameLauncher.Runner.GameMode != GameMode.Host;
         }
-
+        Debug.Log("èüîsÅF" + RoomPlayer.Local.hasWined);
         _networkSceneManagerDefault.Runner.SetActiveScene(2);
     }
 }

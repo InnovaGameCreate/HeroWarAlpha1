@@ -4,6 +4,7 @@ using System.Linq;
 using Fusion;
 using Online;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class RoomPlayer : NetworkBehaviour
 {
@@ -11,8 +12,8 @@ public class RoomPlayer : NetworkBehaviour
 
     public static RoomPlayer Local;
     private PlayerRef _ref;
-    
-    [Networked] public NetworkBool HasWined { get; set; }
+
+    public NetworkBool hasWined;
 
     public override void Spawned()
     {
