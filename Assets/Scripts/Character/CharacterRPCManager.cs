@@ -35,17 +35,18 @@ namespace Unit
         /// </summary>
         private void Init()
         {
-            RPC_ChangeVisible(false);
             float maxHp = MyCharacterProfile.MyHp;
-            Debug.Log($"MaxHp = {maxHp}");
+            //Debug.Log($"MaxHp = {maxHp}");
             MyCharacterStatus
                 .OniVisibleChanged
                 .Subscribe(value =>
                 {
+                    Debug.Log("Subscribe:RPC_ChangeVisible");
                     RPC_ChangeVisible(value);
                 }
             )
             .AddTo(this);
+            RPC_ChangeVisible(true);
 
             MyCharacterProfile
                  .OncharacterHPChanged
@@ -89,7 +90,7 @@ namespace Unit
         {
             if (MyDesplayProfile != null)
             {
-                Debug.Log($"MyHp‚ğ{value}‚ÉØ‚è‘Ö‚¦‚Ü‚µ‚½");
+                //Debug.Log($"MyHp‚ğ{value}‚ÉØ‚è‘Ö‚¦‚Ü‚µ‚½");
                 MyDesplayProfile.SetHp(value); 
             }
         }
@@ -101,7 +102,7 @@ namespace Unit
         {
             if (MyDesplayProfile != null)
             {
-                Debug.Log($"RPC_StateShow‚ğ{value}‚ÉØ‚è‘Ö‚¦‚Ü‚µ‚½");
+                //Debug.Log($"RPC_StateShow‚ğ{value}‚ÉØ‚è‘Ö‚¦‚Ü‚µ‚½");
                 MyDesplayProfile.StateShow(value);
             }
         }
