@@ -71,7 +71,7 @@ public class ScoreObject : NetworkBehaviour
     {
         if (Flag.holder != Camp.NONE)
         {
-            scoreArray.Value += addPoint * Time.deltaTime*10.0f;
+            scoreArray.Value += addPoint * Time.deltaTime;
             camp = Flag.holder;
             _score = scoreArray.Value;
         }
