@@ -29,7 +29,7 @@ public class SpawnSpawner : NetworkBehaviour
                     var point = spawnPoints[index];
                     var characterSpawner = GameLauncher.Runner.Spawn(
                         characterSpawnerPrefab,
-                        point + new Vector3(i * 30.0f, 0, 0),
+                        point + new Vector3(i * 10.0f, 0, 0),
                         Quaternion.identity,
                         player.Object.InputAuthority
                     );

@@ -45,6 +45,7 @@ namespace Unit
             if (GameLauncher.Runner.GameMode == GameMode.Host)
             {
                 var obj = Runner.Spawn(SpawnPrefab, transform.position, Quaternion.identity, RoomPlayer.Object.InputAuthority, InitCharacterBeforeSpawn);
+                Debug.Log(obj.transform.position);
                 /*
                 _profile = obj.GetComponent<CharacterProfile>();
                 _profile.Init(InstantiateCharacterData);

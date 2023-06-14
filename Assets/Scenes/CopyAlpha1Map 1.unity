@@ -33410,8 +33410,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  camera1: {x: 0, y: 30, z: -100}
-  camera2: {x: 0, y: 30, z: 100}
+  camera1: {x: -120, y: 45, z: -200}
+  camera2: {x: 0, y: 45, z: 200}
   playerPrefab: {fileID: 7459362743004597435, guid: ba3eab107f954ce4ca5c9b89566d987a, type: 3}
   spawnPlace: []
 --- !u!114 &8751512571107129197
@@ -33454,8 +33454,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   spawnPoints:
-  - {x: 0, y: 0, z: -100}
-  - {x: 0, y: 0, z: 100}
+  - {x: -120, y: 0, z: -200}
+  - {x: 0, y: 0, z: 200}
   characterSpawnerPrefab: {fileID: 6227929311437473781, guid: eb4ed651a9ff6994d9d141c15ac359fc, type: 3}
   unitCount: 5
 --- !u!114 &8751512571107129202
