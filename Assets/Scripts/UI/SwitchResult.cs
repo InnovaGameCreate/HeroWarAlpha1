@@ -6,16 +6,11 @@ using TMPro;
 public class SwitchResult : MonoBehaviour
 {
     [SerializeField]
-    private int Result = 0;
-    const int WIN = 0;
-    const int LOSE = 1;
-    [SerializeField]
     TextMeshProUGUI[] SwitchUI;
     
-    // Start is called before the first frame update
     void Start()
     {
-        if(Result == WIN)
+        if(RoomPlayer.Local.hasWined)
         {
             SwitchUI[0].enabled = true;
             SwitchUI[1].enabled = false;
@@ -26,11 +21,5 @@ public class SwitchResult : MonoBehaviour
             SwitchUI[1].enabled = true;
         }
             
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
