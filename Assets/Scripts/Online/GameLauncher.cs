@@ -3,11 +3,21 @@ using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public enum ConnectionStatus
+{
+    Disconnected,
+    Connecting,
+    Failed,
+    Connected
+}
 
 namespace Online
 {
     public class GameLauncher : MonoBehaviour, INetworkRunnerCallbacks
     {
+        public static ConnectionStatus ConnectionStatus = ConnectionStatus.Disconnected;
         public static GameLauncher Instance { get; private set; }
         public static NetworkRunner Runner;
         [SerializeField] private RoomPlayer _roomPlayer;
@@ -54,7 +64,34 @@ namespace Online
 
         public void OnConnectedToServer(NetworkRunner runner) { }
 
-        public void OnDisconnectedFromServer(NetworkRunner runner) { }
+        private void SetConnectionStatus(ConnectionStatus status)
+        {
+            Debug.Log($"Setting connection status to {status}");
+
+            ConnectionStatus = status;
+
+            if (!Application.isPlaying)
+                return;
+
+            if (status == ConnectionStatus.Disconnected || status == ConnectionStatus.Failed)
+            {
+                SceneManager.LoadScene("MatchingTest");
+            }
+        }
+
+        public void LeaveSession()
+        {
+            if (Runner != null)
+                Runner.Shutdown();
+            else
+                SetConnectionStatus(ConnectionStatus.Disconnected);
+        }
+        public void OnDisconnectedFromServer(NetworkRunner runner) 
+        {
+            Debug.Log("Disconnected from Server");
+            LeaveSession();
+            SetConnectionStatus(ConnectionStatus.Disconnected);
+        }
 
         public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
 
