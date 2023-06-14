@@ -23,7 +23,7 @@ public class ScoreManager : NetworkBehaviour
     public async void Register(ScoreObject score)
     {
         await Task.Delay(1000);
-        _scoreObjects.Add(score.Object.InputAuthority, score);
+        /*_scoreObjects.Add(score.Object.InputAuthority, score);
         if (_scoreObjects.Count == 1)
         {
             //àÍêlñ⁄ÇÕAÉ`Å[ÉÄ
@@ -36,10 +36,10 @@ public class ScoreManager : NetworkBehaviour
             _scoreObjects[score.Object.InputAuthority].camp = Camp.B;
             p2 = score.Object.InputAuthority;
         }
-
+        */
         if (_uiManager != null)
         {
-            _uiManager.OnPlayerJoined(score.Object.InputAuthority, score);
+            _uiManager.OnPlayerJoined(score);
         }
     }
 

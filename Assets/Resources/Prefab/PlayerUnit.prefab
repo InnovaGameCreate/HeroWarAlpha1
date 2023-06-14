@@ -2623,6 +2623,7 @@ MonoBehaviour:
   - {fileID: 1353517780374649495}
   - {fileID: 6417359716949783618}
   - {fileID: 7987120600909564822}
+  - {fileID: 2664760631750560268}
   - {fileID: 221138280057288734}
   - {fileID: 703712434880474757}
   - {fileID: 111017713333234335}
@@ -2668,6 +2669,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d9f4ead5780fdf4ea45fdf99038baee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
 --- !u!114 &221138280057288734
 MonoBehaviour:
   m_ObjectHideFlags: 0
