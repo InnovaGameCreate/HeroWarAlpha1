@@ -81,11 +81,11 @@ public class ScoreManager : NetworkBehaviour
     {
         if (camp == Camp.A)
         {
-            RoomPlayer.Local.hasWined = GameLauncher.Runner.GameMode == GameMode.Host;
+            RoomPlayer.Local.hasWined = GameLauncher.Runner.GameMode != GameMode.Host;
         }
         else
         {
-            RoomPlayer.Local.hasWined = GameLauncher.Runner.GameMode != GameMode.Host;
+            RoomPlayer.Local.hasWined = GameLauncher.Runner.GameMode == GameMode.Host;
         }
         Debug.Log("èüîsÅF" + RoomPlayer.Local.hasWined);
         _networkSceneManagerDefault.Runner.SetActiveScene(2);
