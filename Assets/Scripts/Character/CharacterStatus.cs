@@ -13,7 +13,7 @@ namespace Unit
         CharacterMove MyCharacterMove;
         Animator MyAnimator;
         private LogManager DeadkLogManager;
-        private ReactiveProperty<bool> iVisible = new ReactiveProperty<bool>(true);
+        private ReactiveProperty<bool> iVisible = new ReactiveProperty<bool>(false);
         [Networked] private TickTimer life { get; set; }
 
         public IObservable<bool> OniVisibleChanged//characterHPが変更された際に発光されるイベント
@@ -137,7 +137,7 @@ namespace Unit
         /// </summary>
         public async void Idiscovered(bool value)
         {
-            Debug.Log($"{gameObject.name}は発見されました(bool = {value})");
+            //Debug.Log($"{gameObject.name}は発見されました(bool = {value})");
             if(value == true)
             {
                 iVisible.Value = true;

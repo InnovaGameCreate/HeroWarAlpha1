@@ -21,13 +21,23 @@ namespace Unit
         private GameObject UnitTargetObject;
         private SphereCollider AttaclColleder;
         private bool attackWaiting = false;
-        void Start()
+
+        private void Awake()
         {
             AttackLogManager = FindObjectOfType<LogManager>();
             AttaclColleder = GetComponent<SphereCollider>();
-            AttaclColleder.radius = MyCharacterProfile.MysearchRange;
-            attackRange = MyCharacterProfile.MyattackRange;
-            searchRange = MyCharacterProfile.MysearchRange;
+            MyCharacterProfile
+                .OninitialSetting
+                .Where(value => value == true)
+                .Subscribe(_ =>
+                {
+                    Debug.Log("初期値の設定がされました");
+                    Init();
+                })
+                .AddTo(this);
+        }
+        void Start()
+        {
 
             MyCharacterProfile.OnCharacterTargetObject
                 .Where(x => x == null)
@@ -47,8 +57,16 @@ namespace Unit
                     UnitTargetObject = x;
                 }).AddTo(this);
 
+
             StartCoroutine(discoverTarget());
 
+        }
+
+        private void Init()
+        {
+            AttaclColleder.radius = MyCharacterProfile.MysearchRange;
+            attackRange = MyCharacterProfile.MyattackRange;
+            searchRange = MyCharacterProfile.MysearchRange;
         }
 
         //対象のオブジェクトが視界範囲内に入った場合
@@ -65,6 +83,7 @@ namespace Unit
                     }
                     if (checkBush(null, EnterObject.gameObject))
                     {
+                        Debug.Log("敵を発見しました");
                         EnterObject.GetComponent<CharacterStatus>().Idiscovered(true);
                         discoveredObjects.Add(EnterObject.gameObject);
                         if (MyCharacterProfile.GetCharacterOwnerType() == OwnerType.Player)
@@ -125,8 +144,10 @@ namespace Unit
                     {
                         if (SearchRangeChack(item))
                         {
+                            Debug.Log("視界内にいたので発見しました");
                             if (checkBush(null, item))
                             {
+                                Debug.Log("対象間にブッシュはないことを確認");
                                 item.GetComponent<CharacterStatus>().Idiscovered(true);
                                 discoveredObjects.Add(item.gameObject);
                                 if (MyCharacterProfile.GetCharacterOwnerType() == OwnerType.Player)
@@ -137,6 +158,10 @@ namespace Unit
                                 {
                                     StartCoroutine(AttackWait());
                                 }
+                            }
+                            else
+                            {
+                                item.GetComponent<CharacterStatus>().Idiscovered(false);
                             }
                         }
                     }
@@ -212,7 +237,7 @@ namespace Unit
                 bool blockObject = false;                                                           //障害物があるか判断するためのboolを定義
                 for (int m = 0; m < hits.Length; m++)
                 {
-                    if (hits[m].transform.gameObject.CompareTag("Bush"))
+                    if (hits[m].transform.gameObject.CompareTag("Bush") || hits[m].transform.gameObject.CompareTag("Stage"))
                     {
                         blockObject = true;                                                         //障害物がある場合はblockObjectをtrueにする。
                         if (blockObject) Debug.Log($"{hits[m].transform.gameObject.name}からブッシュを検知しました");

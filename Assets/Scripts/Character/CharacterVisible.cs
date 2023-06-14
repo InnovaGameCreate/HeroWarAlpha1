@@ -36,7 +36,14 @@ namespace Unit
         }
         public void Visible(bool value)
         {
-            Debug.Log($"Visible{value}:{VisibleObjects.Length}");
+            if(HasInputAuthority)
+            {
+                Debug.Log($"HasInputAuthority : Visible{value}:{VisibleObjects.Length}");
+            }
+            else
+            {
+                Debug.Log($"NotHasInputAuthority : Visible{value}:{VisibleObjects.Length}");
+            }
                 foreach (var Objects in VisibleObjects)
                 {
                     Objects.SetActive(value);
