@@ -85,7 +85,7 @@ namespace Unit
                         MyCharacterProfile.ChangeCharacterState(CharacterState.Attack);                 //攻撃状態に移行
 
                         transform.parent.gameObject.transform.LookAt(TargetObject.transform.position);  //攻撃対象に向く
-                        if (HasInputAuthority) DamageCs.AddDamage(damage);                                                     //敵キャラクターにダメージを与える
+                        if (HasStateAuthority) DamageCs.AddDamage(damage);                                                     //敵キャラクターにダメージを与える
                         yield return ShotEffect();                                                      //攻撃エフェクトを発生させる
                         if (TargetObject == null) break;                                                //攻撃対象がいないとブレイク
                         if (!AttackRangeCheck(TargetObject) || !CanAttackState()) break;  //対象がいない場合はブレイク
