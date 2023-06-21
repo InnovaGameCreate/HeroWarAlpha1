@@ -154,7 +154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bd503b7bd8ba434ea76a50ece4922b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hostManager: {fileID: 947690286492649875, guid: 44c8fd2f5eecafa489ce231bd8f0accb, type: 3}
   _roomPlayer: {fileID: 4772546599743285265, guid: 8babd91d7539a5d4c9a3003623085888, type: 3}
 --- !u!4 &59806237
 Transform:

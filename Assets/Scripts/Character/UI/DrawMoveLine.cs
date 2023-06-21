@@ -12,6 +12,7 @@ namespace Unit
         CharacterProfile MyProfile;
         NavMeshPath Path;
         NavMeshAgent MyAgent;
+        Vector3 targetPos;
 
         void Start()
         {
@@ -25,6 +26,8 @@ namespace Unit
 
             Path = new NavMeshPath();
 
+            targetPos = transform.position;
+
 
             if (MyProfile.GetCharacterOwnerType() == OwnerType.Player && HasInputAuthority)
             {
@@ -32,13 +35,18 @@ namespace Unit
                     .OnMoveTargetPositionChanged
                     .Subscribe(TargetPosition =>
                     {
-                        MyAgent.CalculatePath(TargetPosition, Path);
-
-                        MyLineRenderer.SetVertexCount(Path.corners.Length);
-                        MyLineRenderer.SetPositions(Path.corners);
+                        targetPos = TargetPosition;
                     }
                     );
             }
+        }
+
+        private void FixedUpdate()
+        {
+            MyAgent.CalculatePath(targetPos, Path);
+
+            MyLineRenderer.positionCount = Path.corners.Length;
+            MyLineRenderer.SetPositions(Path.corners);
         }
 
     }

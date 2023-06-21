@@ -11,10 +11,13 @@ namespace Unit
         CharacterMove characterMove;
         public void OnPointerClick(PointerEventData eventData)//キャラクターがクリックされた場合に選択状態になる
         {
+            Debug.Log("クリックされました");
             if (MyCharacterProfile.GetCharacterOwnerType() == OwnerType.Player)
             {
+                Debug.Log("iSelectをtrueにしました");
                 characterMove.iSelect(true);
             }
+            StartCoroutine(SelectCancel());
         }
 
         void Start()
@@ -26,6 +29,17 @@ namespace Unit
         public void MultSelected(bool value)
         {
             characterMove.iSelect(value);
+        }
+
+        IEnumerator SelectCancel()
+        {
+            while (true)
+            {
+                yield return new WaitUntil(() => Input.GetKeyUp(KeyCode.Mouse1));
+                characterMove.iSelect(false);
+                Debug.Log("iSelectをfalseにしました");
+                yield return new WaitForSeconds(1f);
+            }
         }
     }
 }

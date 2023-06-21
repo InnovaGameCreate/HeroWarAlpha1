@@ -152,7 +152,7 @@ namespace Unit
                                 discoveredObjects.Add(item.gameObject);
                                 if (MyCharacterProfile.GetCharacterOwnerType() == OwnerType.Player)
                                 {
-                                    AttackLogManager.AddText($"{transform.parent.name}が{item.name}を発見！", discoveredObjects[0].transform.position);
+                                    AttackLogManager.AddText($"{transform.parent.name}が{item.name}を発見！", item.transform.position);
                                 }
                                 if (!attackWaiting)
                                 {
