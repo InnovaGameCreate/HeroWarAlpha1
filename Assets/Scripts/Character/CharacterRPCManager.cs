@@ -12,7 +12,7 @@ namespace Unit
         [SerializeField]
         private CharacterStatus MyCharacterStatus;
         [SerializeField]
-        private CharacterProfile MyCharacterProfile;        
+        private CharacterProfile MyCharacterProfile;
         [SerializeField]
         private CharacterVisible MyCharacterVisible;
         [SerializeField]
@@ -46,7 +46,7 @@ namespace Unit
                 }
             )
             .AddTo(this);
-            RPC_ChangeVisible(true);
+            //RPC_ChangeVisible(true);
 
             MyCharacterProfile
                  .OncharacterHPChanged

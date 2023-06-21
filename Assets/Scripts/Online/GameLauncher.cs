@@ -45,7 +45,11 @@ namespace Online
         {
             if (!runner.IsServer) return;
             runner.Spawn(_roomPlayer, Vector3.zero, Quaternion.identity, player);
-            if (RoomPlayer.Players.Count >= 2) _networkSceneManagerDefault.Runner.SetActiveScene(1);
+            if (RoomPlayer.Players.Count >= 2)
+            {
+                Runner.SessionInfo.IsOpen = false;
+                _networkSceneManagerDefault.Runner.SetActiveScene(1);
+            }
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
