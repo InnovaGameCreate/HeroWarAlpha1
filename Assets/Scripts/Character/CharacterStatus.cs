@@ -110,6 +110,10 @@ namespace Unit
                     MyAnimator.SetBool("Move", true);
                     MyCharacterMove.StopMove(false);
                     break;
+                case CharacterState.MoveAttack:
+                    MyAnimator.SetBool("Move", true);
+                    MyCharacterMove.StopMove(false);
+                    break;
                 case CharacterState.VigilanceMove:
                     MyAnimator.SetBool("VigilancMove", true);
                     MyCharacterMove.StopMove(false);
@@ -145,7 +149,7 @@ namespace Unit
             else
             {
                 await Task.Delay(3000);
-                iVisible.Value = true;
+                iVisible.Value = false;
             }
         }
         /*

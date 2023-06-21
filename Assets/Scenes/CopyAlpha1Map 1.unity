@@ -3755,7 +3755,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh25268
+  m_Name: pb_Mesh25288
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7413,6 +7413,7 @@ GameObject:
   - component: {fileID: 602297793}
   - component: {fileID: 602297792}
   - component: {fileID: 602297795}
+  - component: {fileID: 602297796}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -7542,6 +7543,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MarkPoint: {fileID: 3142728555183092701, guid: 6f8ce0ade03e5dc4f9ecc73e8c98c7ad, type: 3}
+--- !u!114 &602297796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602297788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!43 &646486866
 Mesh:
   m_ObjectHideFlags: 0
@@ -8411,7 +8428,7 @@ GameObject:
   - component: {fileID: 732155976}
   m_Layer: 0
   m_Name: MediumMap
-  m_TagString: Untagged
+  m_TagString: Stage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
@@ -22286,7 +22303,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24828
+  m_Name: pb_Mesh24848
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

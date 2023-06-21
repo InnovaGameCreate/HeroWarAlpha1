@@ -15,7 +15,7 @@ namespace Unit
     {
         private ReactiveProperty<bool> moveCompleted = new ReactiveProperty<bool>(false);
         //[Networked]
-        private ReactiveProperty<Vector3> moveTargetPosition { get; set; } = new ReactiveProperty<Vector3>(Vector3.zero);
+        private ReactiveProperty<Vector3> moveTargetPosition { get; set; } = new ReactiveProperty<Vector3>();
         private NavMeshAgent Agent;
         CharacterProfile MyCharacterProfile;
         private Camera mainCamera;
@@ -98,20 +98,19 @@ namespace Unit
                     Ray ray = Camera.main.ScreenPointToRay(mousePosition);
                     RaycastHit hit;
                     Physics.Raycast(ray, out hit);
+                    Debug.Log("Move()");
                     RPC_MoveChara(hit.point);
-    
+        
                     //moveTargetPosition.Value = new Vector3(MovePoint.x, transform.position.y, MovePoint.z);
                     //MoveTarget();
                 }
             }
-            
-            IsSelect.Value = false;
             yield break;
         }
 
         public override void StartStateAction()
         {
-            throw new NotImplementedException();
+
         }
 
         public override void StateAction()
@@ -122,13 +121,15 @@ namespace Unit
 
         public override void EndStateAction()
         {
-            throw new NotImplementedException();
+
         }
+
         /*この関数使わなくてもネットワーク上で動きますが、今後使うかもしれないので一応残しておきます*/
         [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
         public void RPC_MoveChara(Vector3 movePosition , RpcInfo info = default)
         {
-            moveTargetPosition.Value = new Vector3(movePosition.x, transform.position.y, movePosition.z);
+            moveTargetPosition.Value = movePosition;
+            Debug.Log($"setMoveTargetPosition:moveTargetPosition.Value = {moveTargetPosition.Value} : movePosition = {movePosition}");
             MoveTarget();
         }
     }

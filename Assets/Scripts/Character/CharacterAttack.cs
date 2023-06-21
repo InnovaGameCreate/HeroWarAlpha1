@@ -48,6 +48,14 @@ namespace Unit
                 .Where(x => x != null)
                 .Subscribe(x =>
                 {
+                    if(MyCharacterProfile.GetCharacterState() == CharacterState.Move)
+                    {
+                        MyCharacterProfile.ChangeCharacterState(CharacterState.MoveAttack);                 //攻撃状態に移行
+                    }
+                    else
+                    {
+                        MyCharacterProfile.ChangeCharacterState(CharacterState.Attack);                 //攻撃状態に移行
+                    }
                     if (HasInputAuthority) Debug.Log("攻撃開始：" + Object.InputAuthority);
                     TargetObject = x;
                     StateAction();
@@ -65,7 +73,7 @@ namespace Unit
             AttaclColleder.radius = MyCharacterProfile.MysearchRange;
             reloadTime = MyCharacterProfile.MyReloadSpeed;
         }
-        
+
         IEnumerator Attack()
         {
             if (TargetObject.gameObject.TryGetComponent(out IDamagable DamageCs) && isCharacterlive)
@@ -78,27 +86,20 @@ namespace Unit
                 while (true)
                 {
                     if (!isCharacterlive) break;
-                    //if(MyCharacterProfile.GetCharacterOwnerType() == OwnerType.Player ) 
-                    if(HasInputAuthority) MyDrawer.DrawLine(TargetObject.transform.position);           //線を引く
-                    if (CanAttackState())                                                              
+                    if (HasInputAuthority) MyDrawer.DrawLine(TargetObject.transform.position);           //線を引く
+                    if (CanAttackState())
                     {
-                        MyCharacterProfile.ChangeCharacterState(CharacterState.Attack);                 //攻撃状態に移行
-
                         transform.parent.gameObject.transform.LookAt(TargetObject.transform.position);  //攻撃対象に向く
-                        if (HasStateAuthority) DamageCs.AddDamage(damage);                                                     //敵キャラクターにダメージを与える
+                        if (HasStateAuthority) DamageCs.AddDamage(damage);                              //敵キャラクターにダメージを与える
                         yield return ShotEffect();                                                      //攻撃エフェクトを発生させる
-                        if (TargetObject == null) break;                                                //攻撃対象がいないとブレイク
-                        if (!AttackRangeCheck(TargetObject) || !CanAttackState()) break;  //対象がいない場合はブレイク
-
-                        MyCharacterProfile.ChangeCharacterState(CharacterState.Reload);                 //リロード状態に移行
 
                         yield return new WaitForSeconds(reloadTime);
-                    }
-                    if (TargetObject == null) break;                                                    //攻撃対象がいないとブレイク
-                    if (!isCharacterlive || !AttackRangeCheck(TargetObject) || !CanAttackState()) break;//対象がいない場合はブレイク
+                        if (TargetObject == null) break;                                                    //攻撃対象がいないとブレイク
+                        if (!isCharacterlive || !AttackRangeCheck(TargetObject) || !CanAttackState()) break;//対象がいない場合はブレイク
 
+                    }
+                    loseSight = true;
                 }
-                loseSight = true;
             }
         }
 
@@ -154,11 +155,8 @@ namespace Unit
         /// </summary>
         private bool CanAttackState()
         {
-            if (MyCharacterProfile.GetCharacterState() == CharacterState.VigilanceMove
-                || MyCharacterProfile.GetCharacterState() == CharacterState.Idle
-                || MyCharacterProfile.GetCharacterState() == CharacterState.Attack
-                || MyCharacterProfile.GetCharacterState() == CharacterState.Reload
-                || MyCharacterProfile.MyMoveHitRate != 0)
+            if (MyCharacterProfile.GetCharacterState() == CharacterState.Attack
+                || MyCharacterProfile.GetCharacterState() == CharacterState.MoveAttack)
             {
                 return true;
             }

@@ -84,7 +84,7 @@ namespace Unit
         /// <summary>
         /// キャラクターの状態を取得
         /// </summary>
-        public CharacterState GetCharacterState()//�L�����N�^�[���N�ɋA�����邩��Q�Ƃ��邽��
+        public CharacterState GetCharacterState()
         {
             return CharacterState.Value;
         }
@@ -94,7 +94,6 @@ namespace Unit
         public void ChangeCharacterState(CharacterState State)
         {
             CharacterState.Value = State;
-            //if (CharacterOwnerType == OwnerType.Player) Debug.Log("Change CharacterState = " + State.ToString());
         }
 
 
