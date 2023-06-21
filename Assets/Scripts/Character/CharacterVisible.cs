@@ -14,25 +14,16 @@ namespace Unit
         private CharacterStatus MyStatus;
         void Start()
         {
-            if (HasInputAuthority)
-            {
-                RPC_ChangeVisible(false);
-            }
+            /*
+            RPC_ChangeVisible(false);
 
             MyStatus = GetComponent<CharacterStatus>();
             
             MyStatus
                 .OniVisibleChanged
-                .Subscribe(value =>
-                {
-                    if (HasInputAuthority)
-                    {
-                        RPC_ChangeVisible(value);
-                    }
-                }
-            )
-            .AddTo(this); ;
-            
+                .Subscribe(RPC_ChangeVisible)
+                .AddTo(this);
+             */
         }
         public void Visible(bool value)
         {
@@ -43,24 +34,23 @@ namespace Unit
             else
             {
                 Debug.Log($"NotHasInputAuthority : Visible{value}:{VisibleObjects.Length}");
-            }
                 foreach (var Objects in VisibleObjects)
                 {
                     Objects.SetActive(value);
                 }
+            }
         }
         /// <summary>
         /// Ž‹Šo‰»‚ÌØ‚è‘Ö‚¦
         /// </summary>
-        [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_ChangeVisible(bool value)
-        {   
-            if(!HasInputAuthority)
+        {
+            if (HasInputAuthority) return;
+            Debug.Log("見えない物を変えます" + value);
+            foreach (var Objects in VisibleObjects)
             {
-                foreach (var Objects in VisibleObjects)
-                {
-                    Objects.SetActive(value);
-                }
+                Objects.SetActive(value);
             }
         } 
     }
