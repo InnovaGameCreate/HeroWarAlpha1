@@ -1,363 +1,266 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 using System.Linq;
-using UnityEngine.AI;
-using System.Collections;
 
 namespace Unit
 {
     public class CharacterSearch : MonoBehaviour
     {
+        [Header("QÆŒ³")]
         [SerializeField]
         CharacterProfile MyCharacterProfile;
         private LogManager AttackLogManager;
-        private float attackRange;
-        private float searchRange;
-        private List<GameObject> targetObjects = new List<GameObject>();
-        private List<GameObject> discoveredObjects = new List<GameObject>();
-        private List<GameObject> searchAreaInObjects = new List<GameObject>();
-        private GameObject TargetObject;
-        private GameObject UnitTargetObject;
-        private SphereCollider AttaclColleder;
-        private bool attackWaiting = false;
 
+        private bool canLoopAction = false;//ƒ‹[ƒvˆ—‚ª‰Â”\‚©‚Ç‚¤‚©
+
+
+        private float attackRange;
+        private List<GameObject> allEnemy = new List<GameObject>();
+        private List<GameObject> inAttackRangeEnemy = new List<GameObject>();
+        private GameObject attackTargetObject = null;
+        private GameObject lastAttackTargetObject = null;
+        private bool isInit = false;
         private void Awake()
         {
             AttackLogManager = FindObjectOfType<LogManager>();
-            AttaclColleder = GetComponent<SphereCollider>();
             MyCharacterProfile
                 .OninitialSetting
                 .Where(value => value == true)
                 .Subscribe(_ =>
                 {
-                    Debug.Log("åˆæœŸå€¤ã®è¨­å®šãŒã•ã‚Œã¾ã—ãŸ");
-                    Init();
+                    if (!isInit)
+                    {
+                        Debug.Log("CharacterSearch:‰Šú’l‚Ìİ’è‚ª‚³‚ê‚Ü‚µ‚½");
+                        Init();
+                    }
                 })
                 .AddTo(this);
         }
-        void Start()
-        {
-
-            MyCharacterProfile.OnCharacterTargetObject
-                .Where(x => x == null)
-                .Subscribe(_ =>
-                {
-                    UnitTargetObject = null;
-                    if (CanShotEnemy())
-                    {
-                        Debug.Log("æ•µç™ºè¦‹ï¼");
-                        MyCharacterProfile.SetTarget(TargetObject);
-                    }
-                }).AddTo(this);
-
-            MyCharacterProfile.OnCharacterTargetObject
-                .Subscribe(x =>
-                {
-                    UnitTargetObject = x;
-                }).AddTo(this);
-
-
-            StartCoroutine(discoverTarget());
-
-        }
-
-        private void Init()
-        {
-            AttaclColleder.radius = MyCharacterProfile.MysearchRange;
-            attackRange = MyCharacterProfile.MyattackRange;
-            searchRange = MyCharacterProfile.MysearchRange;
-        }
-
-        //å¯¾è±¡ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒè¦–ç•Œç¯„å›²å†…ã«å…¥ã£ãŸå ´åˆ
-        private void OnTriggerEnter(Collider EnterObject)
-        {
-            if (EnterObject.TryGetComponent(out CharacterProfile profile)  && EnterObject.CompareTag("Unit"))
-            {
-                if (MyCharacterProfile.GetCharacterOwnerType() != profile.GetCharacterOwnerType() 
-                    || (MyCharacterProfile.local != profile.local))
-                {
-                    if (!searchAreaInObjects.Contains(EnterObject.gameObject))
-                    {
-                        searchAreaInObjects.Add(EnterObject.gameObject);
-                    }
-                    if (checkBush(null, EnterObject.gameObject))
-                    {
-                        Debug.Log("æ•µã‚’ç™ºè¦‹ã—ã¾ã—ãŸ");
-                        EnterObject.GetComponent<CharacterStatus>().Idiscovered(true);
-                        discoveredObjects.Add(EnterObject.gameObject);
-                        if (MyCharacterProfile.GetCharacterOwnerType() == OwnerType.Player)
-                        {
-                            //AttackLogManager.AddText($"{transform.parent.name}ãŒ{EnterObject.name}ã‚’ç™ºè¦‹ï¼", discoveredObjects[0].transform.position);
-                        }
-                        if (!attackWaiting)
-                        {
-                            StartCoroutine(AttackWait());
-                        }
-                    }
-                }
-            }
-        }
-        IEnumerator AttackWait()
-        {
-            attackWaiting = true;
-            while (true)
-            {
-                yield return new WaitUntil(() => CanAttackState() && targetObjects.Count != 0);
-                if (CanShotEnemy() && UnitTargetObject != TargetObject)
-                {
-                    UnitTargetObject = TargetObject;
-                    MyCharacterProfile.SetTarget(TargetObject);
-                }
-                yield return new WaitForSeconds(0.1f);
-            }
-        }
-
-        //å¯¾è±¡ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒè¦–ç•Œç¯„å›²å¤–ã«å‡ºãŸå ´åˆã«ã€ç™ºè¦‹ã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‹ã‚‰
-        private void OnTriggerExit(Collider ExitObject)
-        {
-            if(discoveredObjects.Contains(ExitObject.gameObject))
-            {
-                ExitObject.GetComponent<CharacterStatus>().Idiscovered(false);
-                discoveredObjects.Remove(ExitObject.gameObject);
-            }
-            if (targetObjects.Count == 0)
-            {
-                if (attackWaiting)
-                {
-                    attackWaiting = false;
-                    StopCoroutine(AttackWait());
-                }
-            }
-        }
-
-        IEnumerator discoverTarget()
-        {
-            while (true)
-            {
-                yield return new WaitUntil(() => searchAreaInObjects.Count > 0);
-                searchAreaInObjects.RemoveAll(item => item == null);
-                for (int i = 0; i < searchAreaInObjects.Count; i++)
-                {
-                    var item = searchAreaInObjects[i];
-                    if (!discoveredObjects.Contains(item) && !targetObjects.Contains(item))
-                    {
-                        if (SearchRangeChack(item))
-                        {
-                            Debug.Log("è¦–ç•Œå†…ã«ã„ãŸã®ã§ç™ºè¦‹ã—ã¾ã—ãŸ");
-                            if (checkBush(null, item))
-                            {
-                                Debug.Log("å¯¾è±¡é–“ã«ãƒ–ãƒƒã‚·ãƒ¥ã¯ãªã„ã“ã¨ã‚’ç¢ºèª");
-                                item.GetComponent<CharacterStatus>().Idiscovered(true);
-                                discoveredObjects.Add(item.gameObject);
-                                if (MyCharacterProfile.GetCharacterOwnerType() == OwnerType.Player)
-                                {
-                                    AttackLogManager.AddText($"{transform.parent.name}ãŒ{item.name}ã‚’ç™ºè¦‹ï¼", item.transform.position);
-                                }
-                                if (!attackWaiting)
-                                {
-                                    StartCoroutine(AttackWait());
-                                }
-                            }
-                            else
-                            {
-                                item.GetComponent<CharacterStatus>().Idiscovered(false);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        searchAreaInObjects.Remove(item);
-                    }
-                }
-                yield return new WaitForSeconds(0.1f);
-            }
-        }
-
-        //æ”»æ’ƒå¯èƒ½ãªæ•µãŒã„ã‚‹ã‹ã©ã†ã‹
-        private bool CanShotEnemy()
-        {
-            if (!TargetNullCheck())                                                                     //æ”»æ’ƒå¯¾è±¡ãŒã„ãªã„å ´åˆã¯æ”»æ’ƒã‚’ã‚„ã‚ã‚‹                                  
-            {
-                return false;
-            }
-            SortTargetCharacter();
-            attackRangeObject();//ç´¢æ•µç¯„å›²å†…ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒæ”»æ’ƒç¯„å›²å†…ã‹ã©ã†ã‹ã‚’èª¿ã¹ã‚‹
-            if(checkBush(targetObjects, null) )
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
         /// <summary>
-        /// ãƒ–ãƒƒã‚·ãƒ¥ãŒç„¡ã„ã‹ã©ã†ã‹
+        /// allEnemy‚Ì“G‚É‘Î‚µ‚Äõ“G”ÍˆÍ“à‚©‚ÌŠm”FAõ“G”ÍˆÍ“à‚Ìê‡‚Í–¢”­Œ©‚Ì“GiundiscoveredEnemyj‚ÉŠi”[
         /// </summary>
-        private bool checkBush(List<GameObject> checkObjects,GameObject monoTarget)
+        IEnumerator SearchSystemloop()
         {
-            bool onlyCheck = false;
-            if(checkObjects == null && monoTarget != null)
+            while (true)
             {
-                onlyCheck = true;
-                List<GameObject> l = new List<GameObject>();
-                l.Add(monoTarget);
-                checkObjects = l;
-            }
-           
-            for (int i = 0; i < checkObjects.Count; i++)
-            {
-                //éšœå®³ç‰©åˆ¤å®šç”¨ã®ãƒ¬ã‚¤
-                var diff = checkObjects[i].transform.position - transform.position;
-                var distance = diff.magnitude;
-                var direction = diff.normalized;
+                yield return new WaitUntil(() => canLoopAction);
 
-                RaycastHit[] hits;
-                hits = Physics.RaycastAll(transform.position + new Vector3(0, 3, 0), direction, distance + 1);
-                if (MyCharacterProfile.GetCharacterOwnerType() == OwnerType.Player)
-                    Debug.DrawRay(transform.position + new Vector3(0, 3, 0), direction * (distance + 1), Color.red, 5);            //ãƒ‡ãƒãƒƒã‚¯ç”¨ã®DrawRay
-                else
-                    Debug.DrawRay(transform.position + new Vector3(0, 2.5f, 0), direction * (distance + 1), Color.blue, 5);     //ãƒ‡ãƒãƒƒã‚¯ç”¨ã®DrawRay
-
-                //é †ç•ªã‚’è¿‘ã„é †ã«å…¥ã‚Œæ›¿ãˆã‚‹
-                for (int j = 0; j < hits.Length; j++)
+                //“G‚ªUŒ‚”ÍˆÍ‚©‚Ç‚¤‚©‚ÌŠm”F
+                foreach (var item in allEnemy)
                 {
-                    for (int k = j + 1; k < hits.Length; k++)
+                    if (!inAttackRangeEnemy.Contains(item) && item != null)
                     {
-                        if (ObjectsDistance(hits[j].transform.gameObject) > ObjectsDistance(hits[k].transform.gameObject))
+                        if (checkSightPass(item) && Vector3.Distance(transform.position, item.transform.position) <= attackRange && item.GetComponent<CharacterProfile>().MyHp > 0)
                         {
-                            var temp = hits[j];
-                            hits[j] = hits[k];
-                            hits[k] = temp;
+                            if (MyCharacterProfile.isHasInputAuthority()) Debug.Log($"UŒ‚”ÍˆÍ“à‚¾‚Á‚½‚½‚ßAundiscoveredEnemy‚É{item}‚ğ’Ç‰ÁF{Vector3.Distance(transform.position, item.transform.position) } =< {attackRange} ");
+                            inAttackRangeEnemy.Add(item);
                         }
                     }
                 }
 
-                bool blockObject = false;                                                           //éšœå®³ç‰©ãŒã‚ã‚‹ã‹åˆ¤æ–­ã™ã‚‹ãŸã‚ã®boolã‚’å®šç¾©
-                for (int m = 0; m < hits.Length; m++)
+                //UŒ‚‘ÎÛ‚Ìİ’è
+                if(inAttackRangeEnemy.Count != 0)
                 {
-                    if (hits[m].transform.gameObject.CompareTag("Bush") || hits[m].transform.gameObject.CompareTag("Stage"))
+                    attackTargetObject = getClosestEnemy();
+                    if (attackTargetObject != lastAttackTargetObject)
                     {
-                        blockObject = true;                                                         //éšœå®³ç‰©ãŒã‚ã‚‹å ´åˆã¯blockObjectã‚’trueã«ã™ã‚‹ã€‚
-                        if (blockObject) Debug.Log($"{hits[m].transform.gameObject.name}ã‹ã‚‰ãƒ–ãƒƒã‚·ãƒ¥ã‚’æ¤œçŸ¥ã—ã¾ã—ãŸ");
+                        if (MyCharacterProfile.isHasInputAuthority()) Debug.Log($"UŒ‚”ÍˆÍ“à‚¾‚Á‚½‚½‚ßASetTarget‚ğ{attackTargetObject}‚ğ’Ç‰ÁF");
+                        MyCharacterProfile.SetTarget(attackTargetObject);
+                    }
+                    lastAttackTargetObject = attackTargetObject;
+                }
+                else
+                {
+                    if (lastAttackTargetObject != null)
+                    {
+                        Debug.Log("UŒ‚‘ÎÛ‚ğnull‚Éİ’è");
+                        lastAttackTargetObject = null;
+                        MyCharacterProfile.SetTarget(null);
                     }
                 }
-                if (!blockObject)                                                                    //blockObjectãŒfalseã®å ´åˆã«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«è¨­å®šã—ã¦trueå€¤ã‚’è¿”ã™ã€‚
-                {
-                    if(! onlyCheck) TargetObject = checkObjects[i];
-                    return true;
-                }
-            }
-            return false;
-        }
 
-        //ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«æ ¼ç´ã•ã‚Œã¦ã„ã‚‹ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’è¿‘ã„é †ã«ä¸¦ã¹æ›¿ãˆã‚‹
-        private void SortTargetCharacter()
-        {
-            DeleteTarget();//ä¸è¦ãªã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’å‰Šé™¤
-            if (targetObjects.Count == 0) return;           //ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã„ãªã„å ´åˆã¯å‡¦ç†ã‚’çµ‚äº†
-
-            //ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’è¿‘ã„é †ã«ä¸¦ã¹æ›¿ãˆã‚‹
-            for (int i = 0; i < targetObjects.Count; i++)
-            {
-                for (int j = i + 1; j < targetObjects.Count; j++)
-                {
-                    if (ObjectsDistance(targetObjects[i]) < ObjectsDistance(targetObjects[j]))
-                    {
-                        var temp = targetObjects[i];
-                        targetObjects[i] = targetObjects[j];
-                        targetObjects[j] = temp;
-                    }
-                }
-            }
-        }
-        //ç©ºã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€å°„ç¨‹å¤–ã®æ•µã‚’å‰Šé™¤
-        private void DeleteTarget()
-        {
-            targetObjects.RemoveAll(item => item == null);
-            discoveredObjects.RemoveAll(item => item == null);
-
-            //targetObjectsæ§˜ã®å‡¦ç†
-            if (targetObjects.Count != 0)
-            {
-                for (int i = 0; i < targetObjects.Count; i++)
-                {
-                    if (!AttackRangeChack(targetObjects[i]))
-                    {
-                        targetObjects.Remove(targetObjects[i]);
-                    }
-                }
-            }
-            //discoveredObjectsæ§˜ã®å‡¦ç†
-            if (discoveredObjects.Count != 0)
-            {
-                for (int i = 0; i < discoveredObjects.Count; i++)
-                {
-                    if (!SearchRangeChack(discoveredObjects[i]))
-                    {
-                        discoveredObjects.Remove(discoveredObjects[i]);
-                    }
-                }
+                yield return new WaitForSeconds(0.2f);
+                if (MyCharacterProfile.isHasInputAuthority()) Debug.Log($"CharacterSearch‚ÌŠe’l‚É‚Â‚¢‚ÄBallEnemy = {allEnemy.Count} : inAttackRangeEnemy = {inAttackRangeEnemy.Count}");
+                //List‚Ì®—
+                resetList();
             }
         }
 
-        private bool TargetNullCheck()//ç›®æ¨™ãŒã„ã‚‹ã‹ã©ã†ã‹
+        /// <summary>
+        /// ‰Šú’l‚Ì“ü—Í
+        /// </summary>
+        void Init()
         {
-            if (targetObjects.Count == 0) return false;
-            else if (targetObjects[0] == null) DeleteTarget();
+            isInit = true;
+            attackRange = MyCharacterProfile.MyattackRange;
+            StartCoroutine(setUndiscoveredEnemy());
+            StartCoroutine(SearchSystemloop());
+        }
+
+        /// <summary>
+        /// –¢”­Œ©‚Ì“G‘S‘Ì‚ğæ“¾
+        /// </summary>
+        IEnumerator setUndiscoveredEnemy()
+        {
+            yield return new WaitForSeconds(0.1f);
+            while (true)
+            {
+                var allEnemys = GameObject.FindGameObjectsWithTag("Unit");
+                foreach (var item in allEnemys)
+                {
+                    if (!item.GetComponent<CharacterProfile>().isHasInputAuthority() && MyCharacterProfile.isHasInputAuthority())
+                    {
+                        if (!allEnemy.Contains(item)) allEnemy.Add(item);
+                    }
+                    else if(item.GetComponent<CharacterProfile>().isHasInputAuthority() && !MyCharacterProfile.isHasInputAuthority())
+                    {
+
+                    }
+                }
+
+                if (allEnemy.Count == 5)
+                {
+                    canLoopAction = true;
+                    if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("“G‚Ì”‚ª‚»‚ë‚Á‚Ä‚¢‚é‚Ì‚Åõ“G‚ğŠJn‚µ‚Ü‚·B");
+                    yield return new WaitUntil(() => allEnemy.Count != 5);
+                    yield return new WaitForSeconds(5f);
+                }
+                else
+                {
+                    canLoopAction = false;
+                    if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("“G‚Ì”‚ª‚»‚ë‚Á‚Ä‚¢‚È‚¢‚Ì‚Åõ“Gˆ—‚ğ’â~‚µ‚Ü‚·B");
+                    yield return new WaitForSeconds(0.2f);
+                }
+            }
+        }
+
+        /// <summary>
+        /// ‘ÎÛ‚ğ‹”F‚Å‚«‚é‚©‚Ç‚¤‚©B•Ç‚¨‚æ‚ÑƒuƒbƒVƒ…‚ÌŒvZ
+        /// </summary>
+        private bool checkSightPass(GameObject checkTarget)
+        {
+            if (checkTarget == null) return false;
+            //áŠQ•¨”»’è—p‚Ìray‚Ì”’l
+            var diff = checkTarget.transform.position - transform.position;
+            var distance = diff.magnitude;
+            var direction = diff.normalized;
+
+
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(transform.position + new Vector3(0, 3, 0), direction, distance + 1);
+            Debug.DrawRay(transform.position + new Vector3(0, 3, 0), direction * (distance + 1), Color.red, 1);            //ƒfƒoƒbƒN—p‚ÌDrawRay
+
+            //ƒXƒe[ƒW‚ÌáŠQ•¨‚ÉÕ‹V‚ç‚ê‚Ä‚¢‚éê‡‚Ífalse‚ğ•Ô‚·
+            foreach (var item in hits)
+            {
+                if(item.transform.CompareTag("Stage"))
+                {
+                    if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("‘ÎÛ‚Æ‚ÌŠÔ‚ÉStage‚ÌƒIƒuƒWƒFƒNƒg‚ğŒŸ’m‚µ‚½‚½‚ß‹ŠE‚ª’Ê‚è‚Ü‚¹‚ñ‚Å‚µ‚½");
+                    return false;
+                }
+            }
+
+            //æ“¾‚µ‚½ray‚ğ‹ß‚¢‡”Ô’Ê‚è‚É•À‚×‚é
+            for (int j = 0; j < hits.Length; j++)
+            {
+                for (int k = j + 1; k < hits.Length; k++)
+                {
+                    if (Vector3.Distance(transform.position, hits[j].transform.position) 
+                        > Vector3.Distance(transform.position, hits[k].transform.position))
+                    {
+                        var temp = hits[j];
+                        hits[j] = hits[k];
+                        hits[k] = temp;
+                    }
+                }
+            }
+
+            if (hits.Length >= 2)
+            {
+                //ƒuƒbƒVƒ…‚É‚Â‚¢‚Ä‚ÌŠm”F
+                for (int i = 0; i < hits.Length - 1; i++)
+                {
+                    if (hits[i].transform.CompareTag("Bush"))
+                    {
+                        //ƒuƒbƒVƒ…‚©‚ç‘Šè‚Ü‚Å‚Ì‹——£‚ª30ˆÈ‰º‚¾‚Á‚½ê‡‚Í‹ŠE‚ª’Ê‚ç‚¸false‚ğ•Ô‚·
+                        if (Vector3.Distance(transform.position, hits[hits.Length].transform.position)
+                            - Vector3.Distance(transform.position, hits[i].transform.position)
+                            >= 30)
+                        {
+                            if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("‘ÎÛ‚Æ‚ÌŠÔ‚ÉBush‚ÌƒIƒuƒWƒFƒNƒg‚ğŒŸ’m‚µ‹——£‚ª—£‚ê‚Ä‚¢‚½‚½‚ß‹ŠE‚ª’Ê‚è‚Ü‚¹‚ñ‚Å‚µ‚½:" +
+                                (Vector3.Distance(transform.position, hits[hits.Length].transform.position) - Vector3.Distance(transform.position, hits[i].transform.position)));
+                            return false;
+                        }
+                    }
+                }
+            }
+
             return true;
         }
-        //å¯¾è±¡ãŒå°„ç¨‹ç¯„å›²å†…ã‹ã©ã†ã‹
-        private bool AttackRangeChack(GameObject TargetGameobject)
-        {
-            if (attackRange > ObjectsDistance(TargetGameobject)) return true;
-            else return false;
-        }
-        //å¯¾è±¡ãŒç´¢æ•µç¯„å›²å†…ã‹ã©ã†ã‹
-        private bool SearchRangeChack(GameObject TargetGameobject)
-        {
-            if ((searchRange + 3) > ObjectsDistance(TargetGameobject)) return true;
-            else return false;
-        }
 
-        //äºŒã¤ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è·é›¢
-        private float ObjectsDistance(GameObject TagetObject)
+        /// <summary>
+        /// Å‚à‹ß‚¢“G‚Éæ“¾
+        /// </summary>
+        GameObject getClosestEnemy()
         {
-            return Vector3.Distance(TagetObject.transform.position, transform.position);
-        }
-
-        private void attackRangeObject()
-        {
-            for (int i = 0; i < discoveredObjects.Count; i++)
+            if (inAttackRangeEnemy.Count >= 2)
             {
-                if (attackRange > ObjectsDistance(discoveredObjects[i]))
+                //æ“¾‚µ‚½ray‚ğ‹ß‚¢‡”Ô’Ê‚è‚É•À‚×‚é
+                for (int j = 0; j < inAttackRangeEnemy.Count; j++)
                 {
-                    if (!targetObjects.Contains(discoveredObjects[i]))
+                    for (int k = j + 1; k < inAttackRangeEnemy.Count; k++)
                     {
-                        targetObjects.Add(discoveredObjects[i]);
+                        if (Vector3.Distance(transform.position, inAttackRangeEnemy[j].transform.position)
+                            > Vector3.Distance(transform.position, inAttackRangeEnemy[k].transform.position))
+                        {
+                            var temp = inAttackRangeEnemy[j];
+                            inAttackRangeEnemy[j] = inAttackRangeEnemy[k];
+                            inAttackRangeEnemy[k] = temp;
+                        }
                     }
                 }
             }
+
+
+            //debug—p‚Ìray
+            var diff = inAttackRangeEnemy[0].transform.position - transform.position;
+            var distance = diff.magnitude;
+            var direction = diff.normalized;
+            Debug.DrawRay(transform.position + new Vector3(0, 4, 0), direction * (distance + 1), Color.blue, 1);            //ƒfƒoƒbƒN—p‚ÌDrawRay
+
+            return inAttackRangeEnemy[0];
         }
 
-        //characterãŒæˆ¦é—˜ã§ãã‚‹çŠ¶æ…‹ã‹ã©ã†ã‹
-        private bool CanAttackState()
+        /// <summary>
+        /// ‚·‚×‚Ä‚ÌList‚É‚Â‚¢‚Änull‚Ì‚à‚Ì‚ğList‚©‚çíœ
+        /// </summary>
+        private void resetList()
         {
-            if (MyCharacterProfile.GetCharacterState() == CharacterState.VigilanceMove
-                || MyCharacterProfile.GetCharacterState() == CharacterState.Idle
-                || MyCharacterProfile.GetCharacterState() == CharacterState.Attack
-                || MyCharacterProfile.GetCharacterState() == CharacterState.Reload
-                || MyCharacterProfile.MyMoveHitRate != 0)
+            List<GameObject> tmpList = new List<GameObject>();//íœ‚·‚é€–Ú‚ğˆê“I‚É•Û‘¶
+
+            //“G‚ªUŒ‚”ÍˆÍ‚Å‚Í‚È‚¢ê‡‚ÍUŒ‚”ÍˆÍ‚Ì“G‚©‚çíœ‚·‚é
+            foreach (var item in inAttackRangeEnemy)
             {
-                if (discoveredObjects.Count != 0)
+                if(item == null)
                 {
-                    DeleteTarget();
-                    attackRangeObject();//ç´¢æ•µç¯„å›²å†…ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒæ”»æ’ƒç¯„å›²å†…ã‹ã©ã†ã‹ã‚’èª¿ã¹ã‚‹
+                    tmpList.Add(item);
                 }
-                return true;
+                else if (Vector3.Distance(transform.position, item.transform.position) >= attackRange || item.GetComponent<CharacterProfile>().MyHp <= 0)
+                {
+                    tmpList.Add(item);
+                }
             }
-            else return false;
+
+            foreach (var item in tmpList)//•Û‘¶‚µ‚½€–Ú‚É]‚Á‚Äíœ
+            {
+                inAttackRangeEnemy.Remove(item);
+            }
+            tmpList.Clear();
+
+            //allEnemy‚Ånull‚ğíœ‚·‚é
+            allEnemy.RemoveAll(s => s == null);
         }
     }
 }
