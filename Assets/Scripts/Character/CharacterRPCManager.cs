@@ -8,7 +8,7 @@ namespace Unit
 {
     public class CharacterRPCManager : NetworkBehaviour
     {
-        [Header("Šî–{ƒf[ƒ^‚ÌQÆ")]
+        [Header("åŸºæœ¬ãƒ‡ãƒ¼ã‚¿ã®å‚ç…§")]
         [SerializeField]
         private CharacterStatus MyCharacterStatus;
         [SerializeField]
@@ -24,41 +24,43 @@ namespace Unit
                 .Where(value => value == true)
                 .Subscribe(_ =>
                 {
-                    Debug.Log("‰Šú’l‚Ìİ’è‚ª‚³‚ê‚Ü‚µ‚½");
+                    Debug.Log("CharacterRPCManager:åˆæœŸå€¤ã®è¨­å®šãŒã•ã‚Œã¾ã—ãŸ");
                     Init();
                 })
                 .AddTo(this);
         }
 
         /// <summary>
-        /// ‰Šúİ’è
+        /// åˆæœŸè¨­å®š
         /// </summary>
         private void Init()
         {
             float maxHp = MyCharacterProfile.MyHp;
             //Debug.Log($"MaxHp = {maxHp}");
+            Debug.Log("CharacterRPCManager: Init()");
             MyCharacterStatus
                 .OniVisibleChanged
                 .Subscribe(value =>
                 {
-                    Debug.Log("Subscribe:RPC_ChangeVisible");
+                    Debug.Log($"Subscribe:RPC_ChangeVisible = {value}");
                     RPC_ChangeVisible(value);
                 }
-            )
-            .AddTo(this);
+            ).AddTo(this);
+
             //RPC_ChangeVisible(true);
 
             MyCharacterProfile
                  .OncharacterHPChanged
                  .Subscribe(characterHP =>
                  {
+                     RPC_ShareHp(characterHP);
                      float currentHP = characterHP / maxHp;
-                     RPC_SetHp(currentHP);
+                     //RPC_SetHp(currentHP);
                  }
              ).AddTo(this);
 
 
-            //Œ»İó‘Ô‚Ì“¯Šú
+            //ç¾åœ¨çŠ¶æ…‹ã®åŒæœŸ
             MyCharacterProfile
                 .OnCharacterStateChanged
                 .Subscribe(CharacterState =>
@@ -68,42 +70,55 @@ namespace Unit
              ).AddTo(this);
         }
 
-
         /// <summary>
-        /// ‹Šo‰»‚ÌØ‚è‘Ö‚¦
+        /// è¦–è¦šåŒ–ã®åˆ‡ã‚Šæ›¿ãˆ
         /// </summary>
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_ChangeVisible(bool value)
         {
             if (MyCharacterVisible != null)
             {
-                Debug.Log($"MyCharacterVisible‚ğ{value}‚ÉØ‚è‘Ö‚¦‚Ü‚µ‚½");
+                Debug.Log($"MyCharacterVisibleã‚’{value}ã«åˆ‡ã‚Šæ›¿ãˆã¾ã—ãŸ");
                 MyCharacterVisible.Visible(value);
             }
         }
 
+        /*
         /// <summary>
-        /// ‘Ì—Íƒo[‚ÌXV
+        /// ä½“åŠ›ãƒãƒ¼ã®æ›´æ–°
         /// </summary>
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_SetHp(float value)
         {
             if (MyDesplayProfile != null)
             {
-                //Debug.Log($"MyHp‚ğ{value}‚ÉØ‚è‘Ö‚¦‚Ü‚µ‚½");
+                //Debug.Log($"MyHpã‚’{value}ã«åˆ‡ã‚Šæ›¿ãˆã¾ã—ãŸ");
                 MyDesplayProfile.SetHp(value); 
             }
         }
+        */
         /// <summary>
-        /// ó‘Ô‚ÌXV
+        /// çŠ¶æ…‹ã®æ›´æ–°
         /// </summary>
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_StateShow(string value)
         {
             if (MyDesplayProfile != null)
             {
-                //Debug.Log($"RPC_StateShow‚ğ{value}‚ÉØ‚è‘Ö‚¦‚Ü‚µ‚½");
+                //Debug.Log($"RPC_StateShowã‚’{value}ã«åˆ‡ã‚Šæ›¿ãˆã¾ã—ãŸ");
                 MyDesplayProfile.StateShow(value);
+            }
+        }
+
+        /// <summary>
+        /// ä½“åŠ›ã®æ›´æ–°
+        /// </summary>
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_ShareHp(float value)
+        {
+            if (MyDesplayProfile != null)
+            {
+                MyCharacterProfile.ChangeHPValue(value);
             }
         }
     }

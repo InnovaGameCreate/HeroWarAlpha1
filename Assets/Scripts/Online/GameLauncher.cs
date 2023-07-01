@@ -125,7 +125,7 @@ namespace Online
             await Runner.StartGame(new StartGameArgs()
             {
                 GameMode = mode,
-                SessionName = "",
+                SessionName = "tester22",
                 SceneManager = _networkSceneManagerDefault,
                 PlayerCount = 2,
             });

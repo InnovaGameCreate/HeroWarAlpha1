@@ -16,7 +16,7 @@ namespace Unit
         private ReactiveProperty<bool> iVisible = new ReactiveProperty<bool>(false);
         [Networked] private TickTimer life { get; set; }
 
-        public IObservable<bool> OniVisibleChanged//characterHPが変更された際に発光されるイベント
+        public IObservable<bool> OniVisibleChanged//characterHPが変更された際に発行されるイベント
         {
             get { return iVisible; }
         }
@@ -72,13 +72,13 @@ namespace Unit
         /// </summary>
         private async void StateAction(CharacterState State)//状態を変更する関数
         {
-            if (Object.HasInputAuthority)
+            if (HasInputAuthority)
             {
                 RPC_Render(State);
             }
             else
             {
-                Debug.Log("RPC_Renderが動いていません。"+ Object.InputAuthority);
+                //Debug.Log("RPC_Renderが動いていません。"+ HasInputAuthority);
             }
             
             switch (State)
@@ -141,12 +141,15 @@ namespace Unit
         /// </summary>
         public async void Idiscovered(bool value)
         {
-            //Debug.Log($"{gameObject.name}は発見されました(bool = {value})");
-            if(value == true)
+            if (iVisible.Value == value) return;
+            Debug.Log($"{gameObject.name}は発見されました(bool = {value})(元の数値は{iVisible.Value})");
+
+            if (value == true)
             {
+                iVisible.Value = false;
                 iVisible.Value = true;
             }
-            else
+            else if(iVisible.Value == true)
             {
                 await Task.Delay(3000);
                 iVisible.Value = false;

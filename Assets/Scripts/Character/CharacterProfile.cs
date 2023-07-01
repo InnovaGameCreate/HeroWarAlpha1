@@ -3,8 +3,6 @@ using UnityEngine.AI;
 using UniRx;
 using System;
 using Fusion;
-using TMPro;
-using UnityEngine.UI;
 
 namespace Unit
 {
@@ -15,8 +13,8 @@ namespace Unit
         [SerializeField]
         private OwnerType CharacterOwnerType;
         //[Networked] 
-        private ReactiveProperty<CharacterState> CharacterState { get; set; } = new ReactiveProperty<CharacterState>();//キャラクターの現在の状態
-        private ReactiveProperty<GameObject> TargetObject = new ReactiveProperty<GameObject>(null);//攻撃対象をオブジェクト
+        private ReactiveProperty<CharacterState> CharacterState { get; set; } = new ReactiveProperty<CharacterState>(global::CharacterState.Idle);//キャラクターの現在の状態
+        private ReactiveProperty<GameObject> TargetObject = new ReactiveProperty<GameObject>();//攻撃対象をオブジェクト
         private ReactiveProperty<bool> initialSetting = new ReactiveProperty<bool>(false);//初期値の設定が行われているかどうか
 
         private float attackPower;
@@ -64,6 +62,10 @@ namespace Unit
         public UnitType MyUnitType { get => unitType; }
 
 
+        private void FixedUpdate()
+        {
+            Debug.Log($"CharacterState:{CharacterState}");
+        }
         private void Awake()
         {
             initialSetting.Value = false;
@@ -79,6 +81,19 @@ namespace Unit
         public void SetCharacterOwnerType(OwnerType ownerType)
         {
             CharacterOwnerType = ownerType;
+        }
+
+        public bool isHasInputAuthority()
+        {
+            bool value = false;
+            if (HasInputAuthority) value = true;
+            return value;
+        }
+        public bool isHasStateAuthority()
+        {
+            bool value = false;
+            if (HasStateAuthority) value = true;
+            return value;
         }
 
         /// <summary>
@@ -102,7 +117,7 @@ namespace Unit
         /// </summary>
         public void SetTarget(GameObject newTarget)
         {
-            if(GetCharacterState() != global::CharacterState.Dead)
+            if (GetCharacterState() != global::CharacterState.Dead)
             {
                 TargetObject.Value = newTarget;
                 if (newTarget != null) Debug.Log($"{newTarget.name } を発見");
@@ -120,7 +135,6 @@ namespace Unit
 
         {
             Debug.Log("ダメージ：" + damage);
-            //damage = 0.1f;
             float Penetrationdamage = armor - damage;            
             if (Penetrationdamage < 0)
             {
@@ -129,7 +143,17 @@ namespace Unit
                     characterHP.Value += Penetrationdamage;   
                 }
             }
-            Debug.Log("残り体力：" + characterHP.Value);
+        }
+
+        /// <summary>
+        /// 自分の体力の変更
+        /// </summary>
+        public void ChangeHPValue(float value)
+        {
+            if (characterHP.Value != value)
+            {
+                characterHP.Value = value;
+            }
         }
 
         /// <summary>

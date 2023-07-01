@@ -3,9 +3,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using UniRx;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
-using UnityEngine.EventSystems;
 using Fusion;
 
 namespace Unit
@@ -25,11 +22,11 @@ namespace Unit
         {
             get { return moveTargetPosition; }
         }
-        public IObservable<bool> OnMoveCompleted//characterHPが変更された際に発光されるイベント
+        public IObservable<bool> OnMoveCompleted//moveCompletedが変更されたときに送られるイベント
         {
             get { return moveCompleted; }
         }
-        public IObservable<bool> isSelect//characterHPが変更された際に発光されるイベント
+        public IObservable<bool> isSelect//IsSelectが変更されたときに送られるイベント
         {
             get { return IsSelect; }
         }
@@ -39,6 +36,10 @@ namespace Unit
             if (IsSelect.Value)
             {
                 StateAction();
+            }
+            else
+            {
+                StopCoroutine(Move());
             }
         }
         public bool isArrival()
@@ -70,7 +71,7 @@ namespace Unit
         IEnumerator CompletedMove()
         {
             moveCompleted.Value = false;
-            yield return new WaitUntil(() => CharacterToTragetDistance() < 1);
+            yield return new WaitUntil(() => CharacterToTragetDistance() < 2);
             moveCompleted.Value = true;
         }
 
@@ -88,21 +89,34 @@ namespace Unit
         {
             if (Object.HasInputAuthority)
             {
-                yield return new WaitUntil(() => IsSelect.Value && (Input.GetKey(KeyCode.Mouse1) || Input.GetKey(KeyCode.Mouse0)));
-                if (Input.GetKey(KeyCode.Q)) MyCharacterProfile.ChangeCharacterState(CharacterState.VigilanceMove);
-                else  MyCharacterProfile.ChangeCharacterState(CharacterState.Move);
-    
-                if (Input.GetKey(KeyCode.Mouse1))
+                while (true)
                 {
-                    Vector3 mousePosition = Input.mousePosition;
-                    Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-                    RaycastHit hit;
-                    Physics.Raycast(ray, out hit);
-                    Debug.Log("Move()");
-                    RPC_MoveChara(hit.point);
-        
-                    //moveTargetPosition.Value = new Vector3(MovePoint.x, transform.position.y, MovePoint.z);
-                    //MoveTarget();
+
+                    yield return new WaitUntil(() => IsSelect.Value && (Input.GetKey(KeyCode.Mouse1) || Input.GetKey(KeyCode.Mouse0)));
+                    if (Input.GetKey(KeyCode.Q))
+                    {
+                        MyCharacterProfile.ChangeCharacterState(CharacterState.VigilanceMove);
+                        Debug.Log("VigilanceMove()");
+                    }
+                    else
+                    {
+                        MyCharacterProfile.ChangeCharacterState(CharacterState.Move);
+                        Debug.Log("Move()");
+                    }
+
+                    if (Input.GetKey(KeyCode.Mouse1))
+                    {
+                        Vector3 mousePosition = Input.mousePosition;
+                        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+                        RaycastHit hit;
+                        Physics.Raycast(ray, out hit);
+                        RPC_MoveChara(hit.point);
+
+                        //moveTargetPosition.Value = new Vector3(MovePoint.x, transform.position.y, MovePoint.z);
+
+                    } //MoveTarget();
+
+                    yield return new WaitForSeconds(0.5f);
                 }
             }
             yield break;
@@ -129,7 +143,7 @@ namespace Unit
         public void RPC_MoveChara(Vector3 movePosition , RpcInfo info = default)
         {
             moveTargetPosition.Value = movePosition;
-            Debug.Log($"setMoveTargetPosition:moveTargetPosition.Value = {moveTargetPosition.Value} : movePosition = {movePosition}");
+            //Debug.Log($"setMoveTargetPosition:moveTargetPosition.Value = {moveTargetPosition.Value} : movePosition = {movePosition}");
             MoveTarget();
         }
     }
