@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine.UI;
 using System.Linq;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Fusion;
 
 namespace Unit
@@ -31,7 +30,11 @@ namespace Unit
         CharacterMove MyCharacterMove;
         private GameObject Camera;
         private List<Sprite> IconList;
-        
+
+        private void FixedUpdate()
+        {
+            CharacterStateTMP.transform.LookAt(Camera.transform);
+        }
         public override void Spawned()
         {
             base.Spawned();
@@ -52,28 +55,27 @@ namespace Unit
             //現在体力の同期
             MaxHP = MyCharacterProfile.MyHp;
 
-            /*
+
             MyCharacterProfile
                 .OncharacterHPChanged
                 .Subscribe(characterHP =>
                 {
-                    if(MaxHP < characterHP)
+                    if (MaxHP < characterHP)
                     {
                         MaxHP = characterHP;
+                        Debug.Log("最大体力の更新");
                     }
-                    //HpBar.fillAmount = characterHP / MaxHP;
-                    var currentHP = characterHP / MaxHP;
-                    //RPC_SetHp(currentHP);
-                    if (HasInputAuthority) RPC_SetHp(currentHP);
+                    float currentHP = characterHP / MaxHP;
+                    SetHp(currentHP);
                 }
-            ).AddTo(this);*/
+            ).AddTo(this);
+
 
             //現在状態の同期
             MyCharacterProfile
                 .OnCharacterStateChanged
                 .Subscribe(CharacterState =>
                 {
-                    CharacterStateTMP.transform.LookAt(Camera.transform);
                     CharacterStateTMP.text = CharacterState.ToString();
                     //if (Object.HasInputAuthority) StateShow();
                 }
@@ -119,7 +121,6 @@ namespace Unit
         //[Rpc(RpcSources.InputAuthority, RpcTargets.All)]
         //private void RPC_StateShow(CharacterState state)
         {
-            CharacterStateTMP.transform.LookAt(Camera.transform);
             CharacterStateTMP.text = state;
         }
 

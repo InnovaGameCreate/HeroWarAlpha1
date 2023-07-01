@@ -24,7 +24,7 @@ namespace Unit
                 .Where(value => value == true)
                 .Subscribe(_ =>
                 {
-                    Debug.Log("初期値の設定がされました");
+                    Debug.Log("CharacterRPCManager:初期値の設定がされました");
                     Init();
                 })
                 .AddTo(this);
@@ -37,23 +37,24 @@ namespace Unit
         {
             float maxHp = MyCharacterProfile.MyHp;
             //Debug.Log($"MaxHp = {maxHp}");
+            Debug.Log("CharacterRPCManager: Init()");
             MyCharacterStatus
                 .OniVisibleChanged
                 .Subscribe(value =>
                 {
-                    Debug.Log("Subscribe:RPC_ChangeVisible");
+                    Debug.Log($"Subscribe:RPC_ChangeVisible = {value}");
                     RPC_ChangeVisible(value);
                 }
-            )
-            .AddTo(this);
-            RPC_ChangeVisible(true);
+            ).AddTo(this);
+            //RPC_ChangeVisible(true);
 
             MyCharacterProfile
                  .OncharacterHPChanged
                  .Subscribe(characterHP =>
                  {
+                     RPC_ShareHp(characterHP);
                      float currentHP = characterHP / maxHp;
-                     RPC_SetHp(currentHP);
+                     //RPC_SetHp(currentHP);
                  }
              ).AddTo(this);
 
@@ -68,7 +69,6 @@ namespace Unit
              ).AddTo(this);
         }
 
-
         /// <summary>
         /// 視覚化の切り替え
         /// </summary>
@@ -82,6 +82,7 @@ namespace Unit
             }
         }
 
+        /*
         /// <summary>
         /// 体力バーの更新
         /// </summary>
@@ -94,6 +95,7 @@ namespace Unit
                 MyDesplayProfile.SetHp(value); 
             }
         }
+        */
         /// <summary>
         /// 状態の更新
         /// </summary>
@@ -104,6 +106,18 @@ namespace Unit
             {
                 //Debug.Log($"RPC_StateShowを{value}に切り替えました");
                 MyDesplayProfile.StateShow(value);
+            }
+        }
+
+        /// <summary>
+        /// 体力の更新
+        /// </summary>
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_ShareHp(float value)
+        {
+            if (MyDesplayProfile != null)
+            {
+                MyCharacterProfile.ChangeHPValue(value);
             }
         }
     }

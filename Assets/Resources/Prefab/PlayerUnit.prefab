@@ -10,9 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 406067801383868632}
   - component: {fileID: 406067801383868630}
-  - component: {fileID: 411435913969469522}
+  - component: {fileID: 1275877241305556690}
   - component: {fileID: 406067801383868628}
-  - component: {fileID: 406067801383868631}
   - component: {fileID: 406067801383868629}
   - component: {fileID: 753281826941766134}
   m_Layer: 2
@@ -53,7 +52,7 @@ MonoBehaviour:
   _interpolationDataSource: 0
   BulletPrefab: {fileID: 1019054629656254, guid: 0dd71cf1c4378844fae81b273f0ba817, type: 3}
   FirePosition: {fileID: 406067801759888540}
---- !u!114 &411435913969469522
+--- !u!114 &1275877241305556690
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -62,7 +61,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 406067801383868633}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f822ab56d65af3c42b7f7664b4c9529a, type: 3}
+  m_Script: {fileID: 11500000, guid: 083cec9a5b2d93d4eb933b6c35d0212a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MyCharacterProfile: {fileID: 406067801706209638}
@@ -78,19 +77,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1271daa8afed3104c90e26aa91169355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!135 &406067801383868631
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 406067801383868633}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 20
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!120 &406067801383868629
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -249,8 +235,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 40}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 0, y: 62.2}
+  m_SizeDelta: {x: 600, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &406067801559961560
 CanvasRenderer:
@@ -307,13 +293,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 108
+  m_fontSizeBase: 108
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -885,7 +871,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 50.5}
+  m_AnchoredPosition: {x: 0, y: 48.199997}
   m_SizeDelta: {x: 60, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9058071153495080404
@@ -2520,9 +2506,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  MyCharacterProfile: {fileID: 406067801706209638}
   VisibleObjects:
   - {fileID: 7070238277223681502}
-  - {fileID: 406067803144437432}
+  - {fileID: 3880554130095531382}
+  - {fileID: 5317067430934276569}
+  - {fileID: 1974247924968094220}
+  - {fileID: 406067801559961563}
+  - {fileID: 8303741269820272168}
+  - {fileID: 3619190405411725293}
+  - {fileID: 7663635917808448256}
 --- !u!114 &6417359716949783618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4353,7 +4346,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 50.500004}
+  m_AnchoredPosition: {x: 0, y: 48.2}
   m_SizeDelta: {x: 60, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6369964567639461388
