@@ -131,6 +131,7 @@ namespace Unit
                 //Listの整理
                 resetList();
             }
+
         }
 
         /// <summary>
@@ -209,6 +210,7 @@ namespace Unit
             for (int j = 0; j < hits.Length; j++)
             {
                 for (int k = j + 1; k < hits.Length; k++)
+
                 {
                     if (Vector3.Distance(transform.position, hits[j].transform.position)
                         > Vector3.Distance(transform.position, hits[k].transform.position))
@@ -241,6 +243,7 @@ namespace Unit
             }
 
             return true;
+
         }
         /// <summary>
         /// すべてのListについてnullのものをListから削除
@@ -284,6 +287,7 @@ namespace Unit
             foreach (var item in tmpList)//保存した項目に従って削除
             {
                 discoveredEnemy.Remove(item);//保存した項目に従って削除
+
             }
             tmpList.Clear();
 
