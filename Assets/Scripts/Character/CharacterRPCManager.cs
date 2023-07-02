@@ -16,7 +16,7 @@ namespace Unit
         [SerializeField]
         private CharacterVisible MyCharacterVisible;
         [SerializeField]
-        private DesplayProfile MyDesplayProfile;
+        private DisplayProfile MyDisplayProfile;
         private void Start()
         {
             MyCharacterProfile
@@ -66,6 +66,7 @@ namespace Unit
                 .Subscribe(CharacterState =>
                 {
                     RPC_StateShow(CharacterState.ToString());
+                    RPC_SetCharacterState(CharacterState);
                 }
              ).AddTo(this);
         }
@@ -78,35 +79,21 @@ namespace Unit
         {
             if (MyCharacterVisible != null)
             {
-                Debug.Log($"MyCharacterVisibleを{value}に切り替えました");
+                //Debug.Log($"MyCharacterVisibleを{value}に切り替えました");
                 MyCharacterVisible.Visible(value);
             }
         }
 
-        /*
-        /// <summary>
-        /// 体力バーの更新
-        /// </summary>
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-        private void RPC_SetHp(float value)
-        {
-            if (MyDesplayProfile != null)
-            {
-                //Debug.Log($"MyHpを{value}に切り替えました");
-                MyDesplayProfile.SetHp(value); 
-            }
-        }
-        */
         /// <summary>
         /// 状態の更新
         /// </summary>
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_StateShow(string value)
         {
-            if (MyDesplayProfile != null)
+            if (MyDisplayProfile != null)
             {
                 //Debug.Log($"RPC_StateShowを{value}に切り替えました");
-                MyDesplayProfile.StateShow(value);
+                MyDisplayProfile.StateShow(value);
             }
         }
 
@@ -116,9 +103,21 @@ namespace Unit
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
         private void RPC_ShareHp(float value)
         {
-            if (MyDesplayProfile != null)
+            if (MyDisplayProfile != null)
             {
-                MyCharacterProfile.ChangeHPValue(value);
+                MyCharacterProfile.ChangeHPValue(value,true);
+            }
+        }
+
+        /// <summary>
+        /// 状態の共有
+        /// </summary>
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_SetCharacterState(CharacterState State)
+        {
+            if (MyDisplayProfile != null && MyCharacterProfile.GetCharacterState() != State)
+            {
+                MyCharacterProfile.ChangeCharacterState(State);
             }
         }
     }

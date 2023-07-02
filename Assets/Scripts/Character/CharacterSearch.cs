@@ -32,7 +32,7 @@ namespace Unit
                 {
                     if (!isInit)
                     {
-                        Debug.Log("CharacterSearch:初期値の設定がされました");
+                        if (!MyCharacterProfile.isHasInputAuthority()) Debug.Log("CharacterSearch:初期値の設定がされました");
                         Init();
                     }
                 })
@@ -52,9 +52,9 @@ namespace Unit
                 {
                     if (!inAttackRangeEnemy.Contains(item) && item != null)
                     {
-                        if (checkSightPass(item) && Vector3.Distance(transform.position, item.transform.position) <= attackRange && item.GetComponent<CharacterProfile>().MyHp > 0)
+                        if (checkSightPass(item) && Vector3.Distance(transform.position, item.transform.position) <= attackRange && itemAlive(item))
                         {
-                            if (MyCharacterProfile.isHasInputAuthority()) Debug.Log($"攻撃範囲内だったため、undiscoveredEnemyに{item}を追加：{Vector3.Distance(transform.position, item.transform.position) } =< {attackRange} ");
+                            //if (MyCharacterProfile.isHasInputAuthority()) Debug.Log($"攻撃範囲内だったため、undiscoveredEnemyに{item}を追加：{Vector3.Distance(transform.position, item.transform.position) } =< {attackRange} ");
                             inAttackRangeEnemy.Add(item);
                         }
                     }
@@ -66,7 +66,7 @@ namespace Unit
                     attackTargetObject = getClosestEnemy();
                     if (attackTargetObject != lastAttackTargetObject)
                     {
-                        if (MyCharacterProfile.isHasInputAuthority()) Debug.Log($"攻撃範囲内だったため、SetTargetを{attackTargetObject}を追加：");
+                        //if (MyCharacterProfile.isHasInputAuthority()) Debug.Log($"攻撃範囲内だったため、SetTargetを{attackTargetObject}を追加：");
                         MyCharacterProfile.SetTarget(attackTargetObject);
                     }
                     lastAttackTargetObject = attackTargetObject;
@@ -75,14 +75,15 @@ namespace Unit
                 {
                     if (lastAttackTargetObject != null)
                     {
-                        Debug.Log("攻撃対象をnullに設定");
+                        //Debug.Log("攻撃対象をnullに設定");
                         lastAttackTargetObject = null;
+                        Debug.Log($"敵キャラクターをセット");
                         MyCharacterProfile.SetTarget(null);
                     }
                 }
 
                 yield return new WaitForSeconds(0.2f);
-                if (MyCharacterProfile.isHasInputAuthority()) Debug.Log($"CharacterSearchの各値について。allEnemy = {allEnemy.Count} : inAttackRangeEnemy = {inAttackRangeEnemy.Count}");
+                //if (MyCharacterProfile.isHasInputAuthority()) Debug.Log($"CharacterSearchの各値について。allEnemy = {allEnemy.Count} : inAttackRangeEnemy = {inAttackRangeEnemy.Count}");
                 //Listの整理
                 resetList();
             }
@@ -123,14 +124,14 @@ namespace Unit
                 if (allEnemy.Count == 5)
                 {
                     canLoopAction = true;
-                    if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("敵の数がそろっているので索敵を開始します。");
+                    //if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("敵の数がそろっているので索敵を開始します。");
                     yield return new WaitUntil(() => allEnemy.Count != 5);
                     yield return new WaitForSeconds(5f);
                 }
                 else
                 {
                     canLoopAction = false;
-                    if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("敵の数がそろっていないので索敵処理を停止します。");
+                    //if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("敵の数がそろっていないので索敵処理を停止します。");
                     yield return new WaitForSeconds(0.2f);
                 }
             }
@@ -157,7 +158,7 @@ namespace Unit
             {
                 if(item.transform.CompareTag("Stage"))
                 {
-                    if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("対象との間にStageのオブジェクトを検知したため視界が通りませんでした");
+                    //if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("対象との間にStageのオブジェクトを検知したため視界が通りませんでした");
                     return false;
                 }
             }
@@ -189,8 +190,8 @@ namespace Unit
                             - Vector3.Distance(transform.position, hits[i].transform.position)
                             >= 30)
                         {
-                            if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("対象との間にBushのオブジェクトを検知し距離が離れていたため視界が通りませんでした:" +
-                                (Vector3.Distance(transform.position, hits[hits.Length].transform.position) - Vector3.Distance(transform.position, hits[i].transform.position)));
+                           // if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("対象との間にBushのオブジェクトを検知し距離が離れていたため視界が通りませんでした:" +
+                                //(Vector3.Distance(transform.position, hits[hits.Length].transform.position) - Vector3.Distance(transform.position, hits[i].transform.position)));
                             return false;
                         }
                     }
@@ -261,6 +262,17 @@ namespace Unit
 
             //allEnemyでnullを削除する
             allEnemy.RemoveAll(s => s == null);
+        }
+
+        /// <summary>
+        /// 対象の体力が0以上か
+        /// </summary>
+        bool itemAlive(GameObject item)
+        {
+            if (item.GetComponent<CharacterProfile>().MyHp > 0)
+                return true;
+            else
+                return false;
         }
     }
 }

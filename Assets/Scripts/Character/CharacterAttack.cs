@@ -20,7 +20,8 @@ namespace Unit
         [SerializeField]
         private Transform FirePosition;
         private GameObject TargetObject;
-        public override void Spawned()
+        private bool attackable = false;
+        public void Start()
         {
             base.Spawned();
             MyDrawer = GetComponent<DrawAttackLine>();
@@ -62,57 +63,62 @@ namespace Unit
                     }
                 }
             ).AddTo(this);
-            SetInputAuthority();
+
+            MyCharacterProfile
+             .OninitialSetting
+             .Where(value => value == true)
+             .Subscribe(_ =>
+             {
+                 //Debug.Log("CharacterSearch:初期値の設定がされました");
+                 Init();
+             })
+             .AddTo(this);
         }
 
-        private async void SetInputAuthority()
-        {
-            await Task.Delay(100);
-            
+        private void Init()
+        {            
             damage = MyCharacterProfile.MyAttackPower;
             reloadTime = MyCharacterProfile.MyReloadSpeed;
         }
 
         IEnumerator Attack()
         {
+
             if (TargetObject.gameObject.TryGetComponent(out IDamagable DamageCs) && isCharacterlive)
             {
-
-                //StartCoroutine(EnemyKill());
+                GameObject attackTargetObject = TargetObject;
                 while (true)
                 {
                     Debug.Log("攻撃中");
-                    if (!isCharacterlive)
+                    if (!isCharacterlive || TargetObject != attackTargetObject)
                     {
-                        Debug.Log("NullBreak");
-                        break;
+                        MyDrawer.ClearLine();
+                        MyCharacterProfile.ChangeCharacterState(CharacterState.Idle);                   //待機状態に移行
+                        yield break;
                     }
-                    if (HasInputAuthority) MyDrawer.DrawLine(TargetObject.transform.position);           //線を引く
+                    if (HasInputAuthority) MyDrawer.DrawLine(TargetObject.transform.position);          //線を引く
 
                     if (CanAttackState())
                     {
                         transform.parent.gameObject.transform.LookAt(TargetObject.transform.position);  //攻撃対象に向く
-                        if (HasStateAuthority) DamageCs.AddDamage(damage);                              //敵キャラクターにダメージを与える
+                        if (MyCharacterProfile.HasStateAuthority) DamageCs.AddDamage(damage);           //敵キャラクターにダメージを与える
                         yield return ShotEffect();                                                      //攻撃エフェクトを発生させる
 
                         yield return new WaitForSeconds(reloadTime);
                         if (TargetObject == null)
                         {
                             Debug.Log("NullBreak");
-                            break;                                                //攻撃対象がいないとブレイク
+                            break;                                                                      //攻撃対象がいないとブレイク
                         }
-
                     }
                     else
                     {
                         Debug.Log("CanAttackState() = False");
-                        break;//対象がいない場合はブレイク
+                        break;                                                                          //対象がいない場合はブレイク
                     }
                 }
                 Debug.Log("AttackLoop()Break");
-                MyDrawer.ClearLine();
                 EndStateAction();
-                MyCharacterProfile.ChangeCharacterState(CharacterState.Idle);                           //待機状態に移行
             }
         }
 

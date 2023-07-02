@@ -34,7 +34,7 @@ namespace Unit
                 .Where(value => value == true)
                 .Subscribe(_ =>
                 {
-                    Debug.Log("CharacterVisible:初期値の設定がされました");
+                    if (!MyCharacterProfile.isHasInputAuthority()) Debug.Log("CharacterVisible:初期値の設定がされました");
                     StartCoroutine(Init());
                 })
                 .AddTo(this);
@@ -58,7 +58,7 @@ namespace Unit
         {
             if(HasInputAuthority)
             {
-                Debug.Log($"HasInputAuthority : Visible{value}");
+                //Debug.Log($"HasInputAuthority : Visible{value}");
             }
             else
             {
@@ -66,7 +66,7 @@ namespace Unit
                 {
                     Objects.SetActive(value);
                 }
-                Debug.Log($"NotHasInputAuthority : Visible{value}");
+                //Debug.Log($"NotHasInputAuthority : Visible{value}");
             }
         }
 
@@ -85,7 +85,7 @@ namespace Unit
                     {
                         if (Vector3.Distance(transform.position, item.UnitObject.transform.position) <= item.SearchRange)
                         {
-                            Debug.Log($"索敵範囲内だったため、undiscoveredEnemyに{item}を追加：{Vector3.Distance(transform.position, item.UnitObject.transform.position) } =< {item.SearchRange} ");
+                            //Debug.Log($"索敵範囲内だったため、undiscoveredEnemyに{item}を追加：{Vector3.Distance(transform.position, item.UnitObject.transform.position) } =< {item.SearchRange} ");
                             undiscoveredEnemy.Add(item);
                         }
                     }
@@ -111,23 +111,17 @@ namespace Unit
 
                 if(discoveredEnemy.Count != 0)
                 {
-                    //if (MyCharacterProfile.isHasStateAuthority())
-                    //{
-                    Debug.Log("MyStatus.Idiscovered(true)");
+                    //Debug.Log("MyStatus.Idiscovered(true)");
                         MyStatus.Idiscovered(true);//発見した場合は相手を表示
-                    //}
                 }
                 else
                 {
-                    //if (MyCharacterProfile.isHasStateAuthority())
-                    //{
-                    Debug.Log("MyStatus.Idiscovered(false)");
+                    //Debug.Log("MyStatus.Idiscovered(false)");
                     MyStatus.Idiscovered(false);//発見した場合は相手を表示
-                    //}
                 }
 
                 yield return new WaitForSeconds(0.2f);
-                Debug.Log($"CharacterVisibleの各値について。allEnemy = {allEnemy.Count} :undiscoveredEnemy = {undiscoveredEnemy.Count}: discoveredEnemy = {discoveredEnemy.Count}");
+                //Debug.Log($"CharacterVisibleの各値について。allEnemy = {allEnemy.Count} :undiscoveredEnemy = {undiscoveredEnemy.Count}: discoveredEnemy = {discoveredEnemy.Count}");
                 //Listの整理
                 resetList();
             }
@@ -168,14 +162,14 @@ namespace Unit
                 if (allEnemy.Count == 5)
                 {
                     canLoopAction = true;
-                    Debug.Log("敵の数がそろっているので索敵を開始します。");
+                    //Debug.Log("敵の数がそろっているので索敵を開始します。");
                     yield return new WaitUntil(() => allEnemy.Count != 5);
                     yield return new WaitForSeconds(5f);
                 }
                 else
                 {
                     canLoopAction = false;
-                    Debug.Log("敵の数がそろっていないので索敵処理を停止します。");
+                    //Debug.Log("敵の数がそろっていないので索敵処理を停止します。");
                     yield return new WaitForSeconds(0.2f);
                 }
             }
@@ -201,7 +195,7 @@ namespace Unit
             {
                 if (item.transform.CompareTag("Stage"))
                 {
-                    if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("対象との間にStageのオブジェクトを検知したため視界が通りませんでした");
+                    //if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("対象との間にStageのオブジェクトを検知したため視界が通りませんでした");
                     return false;
                 }
             }
@@ -234,8 +228,8 @@ namespace Unit
                             - Vector3.Distance(transform.position, hits[i].transform.position)
                             >= 30)
                         {
-                            if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("対象との間にBushのオブジェクトを検知し距離が離れていたため視界が通りませんでした:" +
-                                (Vector3.Distance(transform.position, hits[hits.Length].transform.position) - Vector3.Distance(transform.position, hits[i].transform.position)));
+                            //if (MyCharacterProfile.isHasInputAuthority()) Debug.Log("対象との間にBushのオブジェクトを検知し距離が離れていたため視界が通りませんでした:" +
+                             //   (Vector3.Distance(transform.position, hits[hits.Length].transform.position) - Vector3.Distance(transform.position, hits[i].transform.position)));
                             return false;
                         }
                     }

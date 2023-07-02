@@ -8,7 +8,7 @@ using Fusion;
 
 namespace Unit
 {
-    public class DesplayProfile : NetworkBehaviour
+    public class DisplayProfile : NetworkBehaviour
     {
         [Header("ステータスを表すTMP")]
         [SerializeField]
@@ -35,26 +35,45 @@ namespace Unit
         {
             CharacterStateTMP.transform.LookAt(Camera.transform);
         }
-        public override void Spawned()
+        public void Start()
         {
-            base.Spawned();
             Camera = FindObjectOfType<Camera>().gameObject;
             MyCharacterProfile = GetComponentInParent<CharacterProfile>();
             MyCharacterMove = GetComponentInParent<CharacterMove>();
             InSelectImage.color = Color.clear;
 
+            MyCharacterProfile
+                .OninitialSetting
+                .Where(value => value == true)
+                .Subscribe(_ =>
+                {
+                    Debug.Log("DisplayProfile初期値の設定がされました");
+                    Init();
+                })
+                .AddTo(this);
+        }
+        private void Init()
+        {
+
+            if (!MyCharacterProfile.isHasInputAuthority())
+            {
+                Debug.Log($"enemy :: 攻撃範囲 = {MyCharacterProfile.MyattackRange} :索敵範囲 = {MyCharacterProfile.MysearchRange}");
+            }
+            else if (MyCharacterProfile.isHasInputAuthority())
+            {
+                Debug.Log($"my :: 攻撃範囲 = {MyCharacterProfile.MyattackRange} :索敵範囲 = {MyCharacterProfile.MysearchRange}");
+            }
+            //アイコンの変更
+            setUnitImage(MyCharacterProfile.MyUnitType);
             //表示される索敵範囲と攻撃範囲の適応
+
             Vector2 AttackAreaSize = new Vector2(MyCharacterProfile.MyattackRange * 20, MyCharacterProfile.MyattackRange * 20);
             Vector2 SearchAreaSize = new Vector2(MyCharacterProfile.MysearchRange * 20, MyCharacterProfile.MysearchRange * 20);
             CharacterAttackAreaImage.rectTransform.sizeDelta = AttackAreaSize;
             CharacterSearchAreaImage.rectTransform.sizeDelta = SearchAreaSize;
 
-            //アイコンの変更
-            setUnitImage(MyCharacterProfile.MyUnitType);
-
             //現在体力の同期
             MaxHP = MyCharacterProfile.MyHp;
-
 
             MyCharacterProfile
                 .OncharacterHPChanged
@@ -68,7 +87,7 @@ namespace Unit
                     float currentHP = characterHP / MaxHP;
                     SetHp(currentHP);
                 }
-            ).AddTo(this);
+                ).AddTo(this);
 
 
             //現在状態の同期
@@ -102,6 +121,7 @@ namespace Unit
             ).AddTo(this);
         }
 
+
         /// <summary>
         /// ユニットイメージを設定
         /// </summary>
@@ -118,16 +138,12 @@ namespace Unit
 
         //ネットワークを介して状態を表すテキストを更新
         public void StateShow(string state)
-        //[Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-        //private void RPC_StateShow(CharacterState state)
         {
             CharacterStateTMP.text = state;
         }
 
         //ネットワークを介して状態を表すテキストを更新
         public void SetHp(float currentHP)
-        //[Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-        //private void RPC_SetHp(float hp)
         {
             HpBar.fillAmount = currentHP;
         }
