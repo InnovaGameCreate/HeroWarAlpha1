@@ -74,13 +74,14 @@ namespace Unit
         {
             if (HasInputAuthority)
             {
-                RPC_Render(State);
+                //RPC_Render(State);
             }
             else
             {
                 //Debug.Log("RPC_Renderが動いていません。"+ HasInputAuthority);
             }
-            
+            if(MyCharacterProfile.HasStateAuthority) MyCharacterProfile.ChangeCharacterState(State);
+
             switch (State)
             {
                 case CharacterState.Idle:

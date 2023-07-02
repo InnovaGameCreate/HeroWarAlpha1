@@ -64,7 +64,7 @@ namespace Unit
 
         private void FixedUpdate()
         {
-            Debug.Log($"CharacterState:{CharacterState}");
+            //Debug.Log($"CharacterState:{CharacterState}");
         }
         private void Awake()
         {
@@ -119,6 +119,7 @@ namespace Unit
         {
             if (GetCharacterState() != global::CharacterState.Dead)
             {
+                if (!isHasInputAuthority()) Debug.Log($"敵キャラクターをプロフィールにセット");
                 TargetObject.Value = newTarget;
                 if (newTarget != null) Debug.Log($"{newTarget.name } を発見");
             }
@@ -148,9 +149,13 @@ namespace Unit
         /// <summary>
         /// 自分の体力の変更
         /// </summary>
-        public void ChangeHPValue(float value)
+        public void ChangeHPValue(float value,bool isDamage)
         {
-            if (characterHP.Value != value)
+            if(isDamage && characterHP.Value > value)
+            {
+                characterHP.Value = value;
+            }
+            else if (characterHP.Value != value)
             {
                 characterHP.Value = value;
             }
